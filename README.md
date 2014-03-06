@@ -13,5 +13,6 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
 * **RavenDB is passing initial basic tests.**
 * A proof-of-concept DataTable implementation is implemented and is passing basic tests.
 
+
 * A cleaner in-memory implementation is yet to be implemented.
 * Other ORMs and data repositories are yet to be added.

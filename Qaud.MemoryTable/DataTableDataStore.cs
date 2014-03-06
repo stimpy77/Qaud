@@ -163,6 +163,7 @@ namespace Qaud.MemoryTable
             _dataTable.AcceptChanges();
         }
 
+        /// <remarks>This is "protected" for convenience not safety.</remarks>
         protected DataTable DataSetImplementation
         {
             get { return _dataTable; }

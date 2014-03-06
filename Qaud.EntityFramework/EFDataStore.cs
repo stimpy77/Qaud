@@ -35,6 +35,7 @@ namespace Qaud.EntityFramework
         /// <summary>
         ///     Returns the underlying <see cref="DbSet{T}" />
         /// </summary>
+        /// <remarks>This is "protected" for convenience not safety.</remarks>
         protected DbContext DataContextImplementation
         {
             get { return _dbContext; }
@@ -49,6 +50,7 @@ namespace Qaud.EntityFramework
         ///     If provided during instantiation, returns the <see cref="DbContext" /> with which the underlying DbSet is
         ///     associated.
         /// </summary>
+        /// <remarks>This is "protected" for convenience not safety.</remarks>
         object IDataStore<T>.DataContextImplementation
         {
             get { return DataContextImplementation; }

@@ -154,6 +154,7 @@ namespace Qaud.RavenDB
         /// <summary>
         ///     Returns the IDocumentStore responsible for document storage.
         /// </summary>
+        /// <remarks>This is "protected" for convenience not safety.</remarks>
         protected IDocumentStore DataSetImplementation
         {
             get { return _docStore; }
@@ -170,6 +171,7 @@ namespace Qaud.RavenDB
         /// <summary>
         ///     Returns the session object that may or may not contain pending changes.
         /// </summary>
+        /// <remarks>This is "protected" for convenience not safety.</remarks>
         protected IDocumentSession DataContextImplementation
         {
             get { return GetSession(); }

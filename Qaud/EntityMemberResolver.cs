@@ -67,7 +67,7 @@ namespace Qaud
         public void ApplyChanges(T current, T modified)
         {
             var vals = ConvertToDictionary(modified);
-            var props = _publicProperties ?? (_publicProperties = typeof (T).GetProperties( BindingFlags.Public ));
+            var props = _publicProperties ?? (_publicProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
             foreach (var prop in props.Where(prop => prop.GetValue(current, new object[] {}) != vals[prop.Name]))
             {
                 prop.SetValue(current, vals[prop.Name], new object[] {});

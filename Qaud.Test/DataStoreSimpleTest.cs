@@ -54,7 +54,17 @@ namespace Qaud.Test
             {
                 Assert.IsNotNull(result.Comments);
                 Assert.AreEqual(item.Comments.Count, result.Comments.Count);
-                Assert.AreEqual(item.Comments.FirstOrDefault(), result.Comments.FirstOrDefault());
+                try
+                {
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault(), result.Comments.OrderBy(c => c.ID).FirstOrDefault());
+                }
+                catch
+                {
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().ID, result.Comments.OrderBy(c => c.ID).FirstOrDefault().ID);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Author, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Author);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Message, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Message);
+
+                }
             }
 
             // cleanup
@@ -83,7 +93,16 @@ namespace Qaud.Test
             {
                 Assert.IsNotNull(result.Comments);
                 Assert.AreEqual(item.Comments.Count, result.Comments.Count);
-                Assert.AreEqual(item.Comments.FirstOrDefault(), result.Comments.FirstOrDefault());
+                try
+                {
+                    Assert.AreEqual(item.Comments.FirstOrDefault(), result.Comments.FirstOrDefault());
+                }
+                catch
+                {
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().ID, result.Comments.OrderBy(c => c.ID).FirstOrDefault().ID);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Author, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Author);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Message, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Message);
+                }
             }
 
             // cleanup
@@ -122,7 +141,16 @@ namespace Qaud.Test
                 {
                     Assert.IsNotNull(result[i].Comments);
                     Assert.AreEqual(result[i].Comments.Count, items[i].Comments.Count);
-                    Assert.AreEqual(result[i].Comments.FirstOrDefault(), items[i].Comments.FirstOrDefault());
+                    try
+                    {
+                        Assert.AreEqual(result[i].Comments.FirstOrDefault(), items[i].Comments.FirstOrDefault());
+                    }
+                    catch
+                    {
+                        Assert.AreEqual(result[i].Comments.OrderBy(c => c.ID).FirstOrDefault().ID, items[i].Comments.OrderBy(c => c.ID).FirstOrDefault().ID);
+                        Assert.AreEqual(result[i].Comments.OrderBy(c => c.ID).FirstOrDefault().Author, items[i].Comments.OrderBy(c => c.ID).FirstOrDefault().Author);
+                        Assert.AreEqual(result[i].Comments.OrderBy(c => c.ID).FirstOrDefault().Message, items[i].Comments.OrderBy(c => c.ID).FirstOrDefault().Message);
+                    }
                 }
             }
             
@@ -139,6 +167,7 @@ namespace Qaud.Test
             item.AutoPopulate();
             AddItemToStore(item);
             SaveChanges();
+            item = GetItemById(item.ID);
 
             // Act
             item.Content = "Modified";
@@ -185,7 +214,16 @@ namespace Qaud.Test
             {
                 Assert.IsNotNull(result.Comments);
                 Assert.AreEqual(item.Comments.Count, result.Comments.Count);
-                Assert.AreEqual(item.Comments.FirstOrDefault(), result.Comments.FirstOrDefault());
+                try
+                {
+                    Assert.AreEqual(item.Comments.FirstOrDefault(), result.Comments.FirstOrDefault());
+                }
+                catch
+                {
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().ID, result.Comments.OrderBy(c => c.ID).FirstOrDefault().ID);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Author, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Author);
+                    Assert.AreEqual(item.Comments.OrderBy(c => c.ID).FirstOrDefault().Message, result.Comments.OrderBy(c => c.ID).FirstOrDefault().Message);
+                }
             }
 
             // cleanup
@@ -224,6 +262,7 @@ namespace Qaud.Test
             var item = _dataStore.Create();
             AddItemToStore(item);
             SaveChanges();
+            item = GetItemById(item.ID);
 
             // Act
             _dataStore.Delete(item);

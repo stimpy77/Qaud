@@ -46,27 +46,29 @@ namespace Qaud.RavenDB.Test
 
         protected override void AddItemToStore(FooModel item)
         {
-            var session = DocumentStore.OpenSession();
-            session.Store(item);
-            session.SaveChanges();
-            session.Dispose();
+            using (var session = DocumentStore.OpenSession())
+            {
+                session.Store(item, item.ID.ToString());
+                session.SaveChanges();
+            }
         }
 
         protected override void CleanOutItemFromStore(FooModel item)
         {
-            var session = DocumentStore.OpenSession();
-            var refitem = session.Load<FooModel>(item.ID);
-            session.Delete(refitem);
-            session.SaveChanges();
-            session.Dispose();
+            using (var session = DocumentStore.OpenSession())
+            {
+                var refitem = session.Load<FooModel>(item.ID.ToString());
+                session.Delete(refitem);
+                session.SaveChanges();
+            }
         }
 
         protected override FooModel GetItemById(long id)
         {
-            var session = DocumentStore.OpenSession();
-            var ret = session.Load<FooModel>(id.ToString());
-            session.Dispose();
-            return ret;
+            using (var session = DocumentStore.OpenSession())
+            {
+                return session.Load<FooModel>(id.ToString());
+            }
         }
 
         [TestMethod]

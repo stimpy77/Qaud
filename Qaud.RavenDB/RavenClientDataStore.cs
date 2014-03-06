@@ -98,7 +98,7 @@ namespace Qaud.RavenDB
                 throw new InvalidOperationException("The type does not have a KeyAttribute: " +
                                                     changes.GetType().FullName);
             }
-            var key = _memberResolver.GetKeyPropertyValues(changes).Single() as string;
+            var key = _memberResolver.GetKeyPropertyValues(changes).Single().ToString();
             if (string.IsNullOrEmpty(key))
             {
                 throw new MissingPrimaryKeyException("Invalid key in " + changes.GetType().FullName);
@@ -113,6 +113,8 @@ namespace Qaud.RavenDB
         public void Delete(T item)
         {
             IDocumentSession session = GetSession();
+            var key = GetItemKey(item);
+            item = session.Load<T>(key);
             session.Delete(item);
             if (AutoSave) SaveChanges();
         }

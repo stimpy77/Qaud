@@ -113,14 +113,14 @@ namespace Qaud.EntityFramework
             if (AutoSave) SaveChanges();
         }
 
-        public T FindMatch(T lookup)
+        public virtual T FindMatch(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers;
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
             return Find(_memberResolver.GetKeyPropertyValues(lookup));
         }
 
-        public T Find(params object[] keyvalue)
+        public virtual T Find(params object[] keyvalue)
         {
             return _dbSet.Find(keyvalue);
         }
@@ -181,7 +181,7 @@ namespace Qaud.EntityFramework
             if (AutoSave) SaveChanges();
         }
 
-        public void DeleteByKey(params object[] keyvalue)
+        public virtual void DeleteByKey(params object[] keyvalue)
         {
             Delete(Find(keyvalue));
         }

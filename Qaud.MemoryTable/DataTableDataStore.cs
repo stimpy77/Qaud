@@ -31,12 +31,12 @@ namespace Qaud.MemoryTable
             AutoSave = true;
         }
 
-        public T Create()
+        public virtual T Create()
         {
             return Activator.CreateInstance<T>();
         }
 
-        public void Add(T item)
+        public virtual void Add(T item)
         {
             Dictionary<string, object> dic = _memberResolver.ConvertToDictionary(item);
             DataRow row = _dataTable.NewRow();
@@ -48,7 +48,7 @@ namespace Qaud.MemoryTable
             if (AutoSave) SaveChanges();
         }
 
-        public void Add(T item, out T result)
+        public virtual void Add(T item, out T result)
         {
             DataRow newRow = null;
             DataTableNewRowEventHandler tnr = (sender, args) => newRow = args.Row;
@@ -59,7 +59,7 @@ namespace Qaud.MemoryTable
             SaveChanges();
         }
 
-        public void AddRange(IEnumerable<T> items)
+        public virtual void AddRange(IEnumerable<T> items)
         {
             foreach (T item in items)
             {
@@ -67,7 +67,7 @@ namespace Qaud.MemoryTable
             }
         }
 
-        public IQueryable<T> Query
+        public virtual IQueryable<T> Query
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Qaud.MemoryTable
             }
         }
 
-        public T FindMatch(T lookup)
+        public virtual T FindMatch(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
@@ -89,7 +89,7 @@ namespace Qaud.MemoryTable
             return Hydrate(rows.Single());
         }
 
-        public T Find(params object[] keyvalue)
+        public virtual T Find(params object[] keyvalue)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
@@ -102,7 +102,7 @@ namespace Qaud.MemoryTable
             return FindMatch(obj);
         }
 
-        public void Update(T item)
+        public virtual void Update(T item)
         {
             DataRow row = FindRow(item);
             Dictionary<string, object> dic = _memberResolver.ConvertToDictionary(item);
@@ -114,12 +114,12 @@ namespace Qaud.MemoryTable
         }
 
 
-        public void UpdateRange(IEnumerable<T> items)
+        public virtual void UpdateRange(IEnumerable<T> items)
         {
             foreach (T item in items) Update(item);
         }
 
-        public void UpdatePartial(object item)
+        public virtual void UpdatePartial(object item)
         {
             T current = Create();
             _memberResolver.ApplyPartial(current, item); // populate ID'd entity
@@ -130,23 +130,23 @@ namespace Qaud.MemoryTable
             if (AutoSave) SaveChanges();
         }
 
-        public void Delete(T item)
+        public virtual void Delete(T item)
         {
             _dataTable.Rows.Remove(FindRow(item));
             if (AutoSave) SaveChanges();
         }
 
-        public void DeleteByKey(params object[] keyvalue)
+        public virtual void DeleteByKey(params object[] keyvalue)
         {
             Delete(Find(keyvalue));
         }
 
-        public void DeleteRange(IEnumerable<T> items)
+        public virtual void DeleteRange(IEnumerable<T> items)
         {
             foreach (T item in items) Delete(item);
         }
 
-        public bool AutoSave { get; set; }
+        public virtual bool AutoSave { get; set; }
 
         bool IDataStore<T>.SupportsNestedRelationships
         {
@@ -158,13 +158,13 @@ namespace Qaud.MemoryTable
             get { return false; }
         }
 
-        public void SaveChanges()
+        public virtual void SaveChanges()
         {
             _dataTable.AcceptChanges();
         }
 
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected DataTable DataSetImplementation
+        protected virtual DataTable DataSetImplementation
         {
             get { return _dataTable; }
         }
@@ -179,7 +179,7 @@ namespace Qaud.MemoryTable
             get { return null; }
         }
 
-        private T Hydrate(DataRow newRow)
+        protected virtual T Hydrate(DataRow newRow)
         {
             if (newRow == null) return default(T);
             T ret = Create();
@@ -192,7 +192,7 @@ namespace Qaud.MemoryTable
             return ret;
         }
 
-        private DataRow FindRow(T item)
+        protected virtual DataRow FindRow(T item)
         {
             IEnumerable<PropertyInfo> keyprops = _memberResolver.KeyPropertyMembers;
             string filter = "";
@@ -205,7 +205,7 @@ namespace Qaud.MemoryTable
             return result.SingleOrDefault();
         }
 
-        private string FilterByProperties(IEnumerable<PropertyInfo> keyprops, T item)
+        protected virtual string FilterByProperties(IEnumerable<PropertyInfo> keyprops, T item)
         {
             var expr = new StringBuilder();
             foreach (PropertyInfo prop in keyprops)
@@ -226,8 +226,6 @@ namespace Qaud.MemoryTable
             }
             return expr.ToString();
         }
-
-
 
         bool IDataStore<T>.SupportsComplexStructures
         {

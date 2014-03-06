@@ -25,25 +25,25 @@ namespace Qaud.RavenDB
             _docStore = documentStore;
         }
 
-        public T Create()
+        public virtual T Create()
         {
             return Activator.CreateInstance<T>();
         }
 
-        public void Add(T item)
+        public virtual void Add(T item)
         {
             GetSession().Store(item, GetItemKey(item));
             if (AutoSave) SaveChanges();
         }
 
-        public void Add(T item, out T result)
+        public virtual void Add(T item, out T result)
         {
             GetSession().Store(item, GetItemKey(item));
             SaveChanges();
             result = item;
         }
 
-        public void AddRange(IEnumerable<T> items)
+        public virtual void AddRange(IEnumerable<T> items)
         {
             IDocumentSession session = GetSession();
             foreach (T item in items)
@@ -53,25 +53,25 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        public IQueryable<T> Query
+        public virtual IQueryable<T> Query
         {
             get { return GetSession().Query<T>(); }
         }
 
-        public T FindMatch(T lookup)
+        public virtual T FindMatch(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();;
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
             return GetSession().Load<T>(keyprops.Single().GetValue(lookup).ToString());
         }
 
-        public T Find(params object[] keyvalue)
+        public virtual T Find(params object[] keyvalue)
         {
             var key = keyvalue.Single().ToString();
             return GetSession().Load<T>(key);
         }
 
-        public void Update(T item)
+        public virtual void Update(T item)
         {
             string key = GetItemKey(item);
             IDocumentSession session = GetSession();
@@ -84,7 +84,7 @@ namespace Qaud.RavenDB
             }
         }
 
-        public void UpdateRange(IEnumerable<T> items)
+        public virtual void UpdateRange(IEnumerable<T> items)
         {
             foreach (T item in items)
             {
@@ -92,7 +92,7 @@ namespace Qaud.RavenDB
             }
         }
 
-        public void UpdatePartial(object changes)
+        public virtual void UpdatePartial(object changes)
         {
             if (!_memberResolver.KeyPropertyMembers.Any())
             {
@@ -111,7 +111,7 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        public void Delete(T item)
+        public virtual void Delete(T item)
         {
             IDocumentSession session = GetSession();
             var key = GetItemKey(item);
@@ -120,17 +120,17 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        public void DeleteByKey(params object[] keyvalue)
+        public virtual void DeleteByKey(params object[] keyvalue)
         {
             Delete(Find(keyvalue));
         }
 
-        public void DeleteRange(IEnumerable<T> items)
+        public virtual void DeleteRange(IEnumerable<T> items)
         {
             foreach (T item in items) Delete(item);
         }
 
-        public bool AutoSave { get; set; }
+        public virtual bool AutoSave { get; set; }
 
         bool IDataStore<T>.SupportsNestedRelationships
         {
@@ -142,7 +142,7 @@ namespace Qaud.RavenDB
             get { return true; }
         }
 
-        public void SaveChanges()
+        public virtual void SaveChanges()
         {
             if (_session == null) return;
 
@@ -191,13 +191,13 @@ namespace Qaud.RavenDB
             get { return true; }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (_session != null) _session.Dispose();
             if (_docStore != null) _docStore.Dispose();
         }
 
-        private string GetItemKey(T item)
+        protected virtual string GetItemKey(T item)
         {
             if (!_memberResolver.KeyPropertyMembers.Any())
             {
@@ -211,7 +211,7 @@ namespace Qaud.RavenDB
             return key;
         }
 
-        private IDocumentSession GetSession()
+        protected virtual IDocumentSession GetSession()
         {
             return _session ?? (_session = _docStore.OpenSession());
         }

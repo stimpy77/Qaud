@@ -27,7 +27,7 @@ namespace Qaud.EntityFramework
         }
 
 
-        public DbSet<T> DataSetImplementation
+        protected DbSet<T> DataSetImplementation
         {
             get { return _dbSet; }
         }
@@ -35,7 +35,7 @@ namespace Qaud.EntityFramework
         /// <summary>
         ///     Returns the underlying <see cref="DbSet{T}" />
         /// </summary>
-        public DbContext DataContextImplementation
+        protected DbContext DataContextImplementation
         {
             get { return _dbContext; }
         }
@@ -226,12 +226,12 @@ namespace Qaud.EntityFramework
         /// via <see cref="SupportsNestedRelationships"/> (navigation properties) or via tree-based document storage.
         /// Returns false if the document store only supports flat table structures, with no relationships.
         /// </summary>
-        public virtual bool SupportsNestedRelationships
+        bool IDataStore<T>.SupportsNestedRelationships
         {
             get { return true; }
         }
 
-        public bool SupportsComplexStructures
+        bool IDataStore<T>.SupportsComplexStructures
         {
             get { return true; }
         }
@@ -240,7 +240,7 @@ namespace Qaud.EntityFramework
         /// When implemented, gets whether the data store implementation supports transaction scopes
         /// such as when using <code>using (var transaction = new TransactionScope()) { .. }</code>
         /// </summary>
-        public bool SupportsTransactionScope
+        bool IDataStore<T>.SupportsTransactionScope
         {
             get { return true; }
         }

@@ -148,12 +148,12 @@ namespace Qaud.MemoryTable
 
         public bool AutoSave { get; set; }
 
-        public bool SupportsNestedRelationships
+        bool IDataStore<T>.SupportsNestedRelationships
         {
             get { return false; }
         }
 
-        public bool SupportsTransactionScope
+        bool IDataStore<T>.SupportsTransactionScope
         {
             get { return false; }
         }
@@ -163,12 +163,12 @@ namespace Qaud.MemoryTable
             _dataTable.AcceptChanges();
         }
 
-        public object DataSetImplementation
+        object IDataStore<T>.DataSetImplementation
         {
             get { return _dataTable; }
         }
 
-        public object DataContextImplementation
+        object IDataStore<T>.DataContextImplementation
         {
             get { return null; }
         }
@@ -223,7 +223,7 @@ namespace Qaud.MemoryTable
 
 
 
-        public bool SupportsComplexStructures
+        bool IDataStore<T>.SupportsComplexStructures
         {
             get { return false; }
         }

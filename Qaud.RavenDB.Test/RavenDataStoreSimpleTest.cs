@@ -31,7 +31,7 @@ namespace Qaud.RavenDB.Test
 
             void IDisposable.Dispose()
             {
-                ((DocumentStore)DataSetImplementation).Dispose();
+                ((DocumentStore)((IDataStore<FooModel>)this).DataSetImplementation).Dispose();
                 base.Dispose();
             }
         }

@@ -131,12 +131,12 @@ namespace Qaud.RavenDB
 
         public bool AutoSave { get; set; }
 
-        public bool SupportsNestedRelationships
+        bool IDataStore<T>.SupportsNestedRelationships
         {
             get { return false; }
         }
 
-        public bool SupportsTransactionScope
+        bool IDataStore<T>.SupportsTransactionScope
         {
             get { return true; }
         }
@@ -153,7 +153,7 @@ namespace Qaud.RavenDB
         /// <summary>
         ///     Returns the IDocumentStore responsible for document storage.
         /// </summary>
-        public object DataSetImplementation
+        object IDataStore<T>.DataSetImplementation
         {
             get { return _docStore; }
         }
@@ -161,9 +161,15 @@ namespace Qaud.RavenDB
         /// <summary>
         ///     Returns the session object that may or may not contain pending changes.
         /// </summary>
-        public object DataContextImplementation
+        object IDataStore<T>.DataContextImplementation
         {
             get { return _session; }
+        }
+
+
+        bool IDataStore<T>.SupportsComplexStructures
+        {
+            get { return true; }
         }
 
         public void Dispose()
@@ -189,12 +195,6 @@ namespace Qaud.RavenDB
         private IDocumentSession GetSession()
         {
             return _session ?? (_session = _docStore.OpenSession());
-        }
-
-
-        public bool SupportsComplexStructures
-        {
-            get { return true; }
         }
     }
 }

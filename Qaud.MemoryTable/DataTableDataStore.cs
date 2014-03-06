@@ -163,9 +163,14 @@ namespace Qaud.MemoryTable
             _dataTable.AcceptChanges();
         }
 
-        object IDataStore<T>.DataSetImplementation
+        protected DataTable DataSetImplementation
         {
             get { return _dataTable; }
+        }
+
+        object IDataStore<T>.DataSetImplementation
+        {
+            get { return DataSetImplementation; }
         }
 
         object IDataStore<T>.DataContextImplementation

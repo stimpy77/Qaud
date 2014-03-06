@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Raven.Abstractions.Data;
 using Raven.Client;
+using Raven.Client.Document;
 
 namespace Qaud.RavenDB
 {
@@ -153,9 +154,25 @@ namespace Qaud.RavenDB
         /// <summary>
         ///     Returns the IDocumentStore responsible for document storage.
         /// </summary>
-        object IDataStore<T>.DataSetImplementation
+        protected IDocumentStore DataSetImplementation
         {
             get { return _docStore; }
+        }
+
+        /// <summary>
+        ///     Returns the IDocumentStore responsible for document storage.
+        /// </summary>
+        object IDataStore<T>.DataSetImplementation
+        {
+            get { return DataSetImplementation; }
+        }
+
+        /// <summary>
+        ///     Returns the session object that may or may not contain pending changes.
+        /// </summary>
+        protected IDocumentSession DataContextImplementation
+        {
+            get { return GetSession(); }
         }
 
         /// <summary>
@@ -163,7 +180,7 @@ namespace Qaud.RavenDB
         /// </summary>
         object IDataStore<T>.DataContextImplementation
         {
-            get { return _session; }
+            get { return DataContextImplementation; }
         }
 
 

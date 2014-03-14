@@ -21,13 +21,13 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         void DeleteByKey(params object[] keyvalue);
         void DeleteRange(IEnumerable<T> items);
         
-        // metadata (should be implemented on the explicit interface, to conveniently hide from consumer code)
+        // metadata (most should be implemented on the explicit interface, to conveniently hide from consumer code)
         bool AutoSave { get; set; }
+        void SaveChanges();
         bool SupportsNestedRelationships { get; }
         bool SupportsComplexStructures { get; }
         bool SupportsGeneratedKeys { get; }
         bool SupportsTransactionScope { get; }
-        void SaveChanges();
         object DataSet { get; }
         object DataContext { get; }
 

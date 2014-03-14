@@ -22,14 +22,14 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         void DeleteRange(IEnumerable<T> items);
         
         // metadata (most should be implemented on the explicit interface, to conveniently hide from consumer code)
-        bool AutoSave { get; set; }
-        void SaveChanges();
-        bool SupportsNestedRelationships { get; }
-        bool SupportsComplexStructures { get; }
-        bool SupportsGeneratedKeys { get; }
-        bool SupportsTransactionScope { get; }
-        object DataSet { get; }
-        object DataContext { get; }
+        bool AutoSave { get; set; }               // indicates deferrable changes
+        void SaveChanges();                       // apply changes; noop if AutoSave == true
+        bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF
+        bool SupportsComplexStructures { get; }   // indicates support for multilevel object graphs in one entry as with RavenDB
+        bool SupportsGeneratedKeys { get; }       // indicates support for [DatabaseGenerated(Identity)] 
+        bool SupportsTransactionScope { get; }    // indicates support for using(var scope = new TransactionScope()) { .. }
+        object DataSet { get; }                   // gets the underlying data table, data set, dictionary, or whatever is doing the work
+        object DataContext { get; }               // gets the object that contains the connection, if any, to the database
 
 
 ---

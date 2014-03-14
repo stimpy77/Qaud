@@ -108,7 +108,7 @@ namespace Qaud
         bool SupportsNestedRelationships { get; }
 
         /// <summary>
-        /// Gets whether a single property can be deserialized as a complete complex type automatically, whether
+        /// When implemented, gets whether a single property can be deserialized as a complete complex type automatically, whether
         /// via <see cref="SupportsNestedRelationships"/> (navigation properties) or via tree-based document storage.
         /// Returns false if the document store only supports flat table structures, with no relationships.
         /// </summary>

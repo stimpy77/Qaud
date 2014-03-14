@@ -240,6 +240,16 @@ namespace Qaud.EntityFramework
         }
 
         /// <summary>
+        /// Gets whether the data store implementation supports 
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
+        /// </summary>
+        bool IDataStore<T>.SupportsGeneratedKeys
+        {
+            get { return true; }
+        }
+
+        /// <summary>
         /// When implemented, gets whether the data store implementation supports transaction scopes
         /// such as when using <code>using (var transaction = new TransactionScope()) { .. }</code>
         /// </summary>

@@ -186,6 +186,16 @@ namespace Qaud.RavenDB
             get { return DataContextImplementation; }
         }
 
+        /// <summary>
+        /// Gets whether the data store implementation supports 
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
+        /// </summary>
+        bool IDataStore<T>.SupportsGeneratedKeys
+        {
+            get { return false; }
+        }
+
 
         bool IDataStore<T>.SupportsComplexStructures
         {

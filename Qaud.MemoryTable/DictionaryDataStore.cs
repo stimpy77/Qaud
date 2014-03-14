@@ -169,6 +169,16 @@ namespace Qaud.MemoryTable
         }
 
 
+        /// <summary>
+        /// Gets whether the data store implementation supports 
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
+        /// </summary>
+        bool IDataStore<T>.SupportsGeneratedKeys
+        {
+            get { return false; }
+        }
+
         void ICollection<T>.Clear()
         {
             _dictionary.Clear();
@@ -217,54 +227,48 @@ namespace Qaud.MemoryTable
 
         void IDictionary<string, T>.Add(string key, T value)
         {
-            throw new NotImplementedException();
+            _dictionary.Add(key, value);
         }
 
         bool IDictionary<string, T>.ContainsKey(string key)
         {
-            throw new NotImplementedException();
+            return _dictionary.ContainsKey(key);
         }
 
         ICollection<string> IDictionary<string, T>.Keys
         {
-            get { throw new NotImplementedException(); }
+            get { return _dictionary.Keys; }
         }
 
         bool IDictionary<string, T>.Remove(string key)
         {
-            throw new NotImplementedException();
+            return _dictionary.Remove(key);
         }
 
         bool IDictionary<string, T>.TryGetValue(string key, out T value)
         {
-            throw new NotImplementedException();
+            return _dictionary.TryGetValue(key, out value);
         }
 
         ICollection<T> IDictionary<string, T>.Values
         {
-            get { throw new NotImplementedException(); }
+            get { return _dictionary.Values; }
         }
 
         T IDictionary<string, T>.this[string key]
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return _dictionary[key]; }
+            set { _dictionary[key] = value; }
         }
 
         void ICollection<KeyValuePair<string, T>>.Add(KeyValuePair<string, T> item)
         {
-            throw new NotImplementedException();
+            _dictionary.Add(item.Key, item.Value);
         }
 
         void ICollection<KeyValuePair<string, T>>.Clear()
         {
-            throw new NotImplementedException();
+            _dictionary.Clear();
         }
 
         bool ICollection<KeyValuePair<string, T>>.Contains(KeyValuePair<string, T> item)

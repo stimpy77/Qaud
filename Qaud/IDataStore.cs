@@ -121,6 +121,13 @@ namespace Qaud
         bool SupportsTransactionScope { get; }
 
         /// <summary>
+        /// When implemented, gets whether the data store implementation supports 
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
+        /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
+        /// </summary>
+        bool SupportsGeneratedKeys { get; }
+
+        /// <summary>
         /// When implemented, applies changes made using <see cref="Add"/>, <see cref="Update"/>, and/or <see cref="Delete"/>.
         ///  This method should have no effect if <see cref="AutoSave"/> is set to <value>true</value>, in which case the changes would have already been applied.
         /// </summary>

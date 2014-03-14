@@ -198,13 +198,16 @@ namespace Qaud.RavenDB
             if (_docStore != null) _docStore.Dispose();
         }
 
+        protected virtual string KeyJoinDelimeter { get; set; }
+
         protected virtual string GetItemKey(T item)
         {
             if (!_memberResolver.KeyPropertyMembers.Any())
             {
                 throw new InvalidOperationException("The type does not have a KeyAttribute: " + item.GetType().FullName);
             }
-            var key = _memberResolver.GetKeyPropertyValues(item).Single().ToString();
+            var keys = _memberResolver.GetKeyPropertyValues(item);
+            var key = string.Join(KeyJoinDelimeter, keys);
             if (string.IsNullOrEmpty(key))
             {
                 throw new MissingPrimaryKeyException("Invalid key in " + item.GetType().FullName);

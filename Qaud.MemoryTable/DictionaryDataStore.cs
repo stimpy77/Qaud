@@ -301,7 +301,7 @@ namespace Qaud.MemoryTable
             return _dictionary.GetEnumerator();
         }
 
-        public virtual string KeyJoinDelimeter { get; set; }
+        protected virtual string KeyJoinDelimeter { get; set; }
 
         protected virtual string GetItemKey(T item)
         {

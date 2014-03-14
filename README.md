@@ -37,9 +37,6 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
 * **RavenDB is passing initial basic tests.**
 * **A DataTable implementation is passing basic tests.**
 * **A SortedDictionary implementatio is passing basic tests.**
-
----
-
 * Other ORMs and data repositories are yet to be added.
 
 _____

@@ -7,6 +7,30 @@ The interface itself is IDataStore<T>:
 
 https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
 
+        T Create();
+        void Add(T item);
+        void Add(T item, out T result);
+        void AddRange(IEnumerable<T> items);
+        IQueryable<T> Query { get; }
+        T FindMatch(T lookup);
+        T Find(params object[] keyvalue);
+        void Update(T item);
+        void UpdateRange(IEnumerable<T> items);
+        T UpdatePartial(object item);
+        void Delete(T item);
+        void DeleteByKey(params object[] keyvalue);
+        void DeleteRange(IEnumerable<T> items);
+        
+        // metadata
+        bool AutoSave { get; set; }
+        bool SupportsNestedRelationships { get; }
+        bool SupportsComplexStructures { get; }
+        bool SupportsTransactionScope { get; }
+        void SaveChanges();
+        object DataSetImplementation { get; }
+        object DataContextImplementation { get; }
+
+
 ---
 
 * **EntityFramework is passing initial basic tests.**

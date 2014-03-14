@@ -40,7 +40,6 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
 
 ---
 
-* A cleaner in-memory implementation is yet to be implemented.
 * Other ORMs and data repositories are yet to be added.
 
 _____

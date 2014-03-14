@@ -36,8 +36,8 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
 
 * **EntityFramework is passing initial very basic tests.**
 * **RavenDB is passing initial very basic tests.**
-* **A DataTable implementation is initial very basic tests.**
-* **A SortedDictionary implementation is initial very basic tests.**
+* **A DataTable implementation is passing initial very basic tests.**
+* **A SortedDictionary implementation is passing initial very basic tests.**
 * Other ORMs and data repositories are yet to be added.
 
 _____

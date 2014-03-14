@@ -158,12 +158,12 @@ namespace Qaud.MemoryTable
             //throw new NotImplementedException();
         }
 
-        object IDataStore<T>.DataSetImplementation
+        object IDataStore<T>.DataSet
         {
             get { return _dictionary; }
         }
 
-        object IDataStore<T>.DataContextImplementation
+        object IDataStore<T>.DataContext
         {
             get { return null; }
         }

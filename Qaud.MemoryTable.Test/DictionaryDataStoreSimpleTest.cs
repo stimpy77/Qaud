@@ -17,17 +17,17 @@ namespace Qaud.MemoryTable.Test
 
         protected override void AddItemToStore(FooModel item)
         {
-            ((IDictionary<string, FooModel>)DataStore.DataSetImplementation).Add(item.ID.ToString(), item);
+            ((IDictionary<string, FooModel>)DataStore.DataSet).Add(item.ID.ToString(), item);
         }
 
         protected override void CleanOutItemFromStore(FooModel item)
         {
-            ((IDictionary<string, FooModel>)DataStore.DataSetImplementation).Remove(item.ID.ToString());
+            ((IDictionary<string, FooModel>)DataStore.DataSet).Remove(item.ID.ToString());
         }
 
         protected override FooModel GetItemById(long id)
         {
-            var dic = ((IDictionary<string, FooModel>) DataStore.DataSetImplementation);
+            var dic = ((IDictionary<string, FooModel>) DataStore.DataSet);
             return dic[id.ToString()];
         }
 

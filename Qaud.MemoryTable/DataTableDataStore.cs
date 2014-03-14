@@ -166,17 +166,17 @@ namespace Qaud.MemoryTable
         }
 
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected virtual DataTable DataSetImplementation
+        protected virtual DataTable DataSet
         {
             get { return _dataTable; }
         }
 
-        object IDataStore<T>.DataSetImplementation
+        object IDataStore<T>.DataSet
         {
-            get { return DataSetImplementation; }
+            get { return DataSet; }
         }
 
-        object IDataStore<T>.DataContextImplementation
+        object IDataStore<T>.DataContext
         {
             get { return null; }
         }

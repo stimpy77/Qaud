@@ -20,7 +20,7 @@ namespace Qaud.EntityFramework.Test
         public EntityFrameworkDataStoreSimpleTest()
             : base(new TestEFDataStoreGenerator().Create())
         {
-            _dbset = (DbSet<FooModel>) DataStore.DataSetImplementation;
+            _dbset = (DbSet<FooModel>) DataStore.DataSet;
         }
 
         protected override void AddItemToStore(FooModel item)

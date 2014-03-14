@@ -31,7 +31,7 @@ namespace Qaud.RavenDB.Test
 
             void IDisposable.Dispose()
             {
-                ((DocumentStore)((IDataStore<FooModel>)this).DataSetImplementation).Dispose();
+                ((DocumentStore)((IDataStore<FooModel>)this).DataSet).Dispose();
                 base.Dispose();
             }
         }
@@ -41,7 +41,7 @@ namespace Qaud.RavenDB.Test
 
         private DocumentStore DocumentStore
         {
-            get { return (DocumentStore)base.DataStore.DataSetImplementation; }
+            get { return (DocumentStore)base.DataStore.DataSet; }
         }
 
         protected override void AddItemToStore(FooModel item)

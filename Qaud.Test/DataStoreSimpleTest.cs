@@ -327,18 +327,18 @@ namespace Qaud.Test
         }
 
         /// <summary>
-        /// Item is added directly to the storage mechanism via <see cref="DataStore"/>.DataSetImplementation.
+        /// Item is added directly to the storage mechanism via <see cref="DataStore"/>.DataSet.
         /// </summary>
         /// <param name="item"></param>
         protected abstract void AddItemToStore(FooModel item);
         /// <summary>
-        /// Item is removed directly from the storage mechanism via <see cref="DataStore"/>.DataSetImplementation
+        /// Item is removed directly from the storage mechanism via <see cref="DataStore"/>.DataSet
         /// if the item exists.
         /// </summary>
         /// <param name="item"></param>
         protected abstract void CleanOutItemFromStore(FooModel item);
         /// <summary>
-        /// Item is returned directly from the storage mechanism via <see cref="DataStore"/>.DataSetImplementation.
+        /// Item is returned directly from the storage mechanism via <see cref="DataStore"/>.DataSet.
         /// A <value>null</value> value is returned if the item does not exist.
         /// </summary>
         /// <param name="id"></param>

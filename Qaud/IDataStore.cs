@@ -136,11 +136,11 @@ namespace Qaud
         /// <summary>
         /// When implemented, returns the underlying data structure responsible for managing this data store.
         /// </summary>
-        object DataSetImplementation { get; }
+        object DataSet { get; }
 
         /// <summary>
         /// When implemented, and if provided, returns the data context associated with the underlying data structure responsible for managing this data store.
         /// </summary>
-        object DataContextImplementation { get; }
+        object DataContext { get; }
     }
 }

@@ -27,7 +27,7 @@ namespace Qaud.EntityFramework
         }
 
 
-        protected DbSet<T> DataSetImplementation
+        protected DbSet<T> DataSet
         {
             get { return _dbSet; }
         }
@@ -36,14 +36,14 @@ namespace Qaud.EntityFramework
         ///     Returns the underlying <see cref="DbSet{T}" />
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected DbContext DataContextImplementation
+        protected DbContext DataContext
         {
             get { return _dbContext; }
         }
 
-        object IDataStore<T>.DataSetImplementation
+        object IDataStore<T>.DataSet
         {
-            get { return DataSetImplementation; }
+            get { return DataSet; }
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace Qaud.EntityFramework
         ///     associated.
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        object IDataStore<T>.DataContextImplementation
+        object IDataStore<T>.DataContext
         {
-            get { return DataContextImplementation; }
+            get { return DataContext; }
         }
 
         ///////////////////////////////////////////

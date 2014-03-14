@@ -20,7 +20,7 @@ namespace Qaud.MemoryTable.Test
 
         private DataTable DataTable
         {
-            get { return (DataTable) base.DataStore.DataSetImplementation; }
+            get { return (DataTable) base.DataStore.DataSet; }
         }
 
         protected override void AddItemToStore(FooModel item)

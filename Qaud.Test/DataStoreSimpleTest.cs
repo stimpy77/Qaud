@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Qaud.Test
 {
-    [TestClass]
     public abstract class DataStoreSimpleTest
     {
         private IDataStore<FooModel> _dataStore;
@@ -18,7 +17,6 @@ namespace Qaud.Test
             _dataStore = dataStore;
         }
 
-        [TestMethod]
         protected virtual void DataStore_Create_Instantiates_T()
         {
             // Arrange
@@ -32,7 +30,6 @@ namespace Qaud.Test
             result.AutoPopulate();
         }
 
-        [TestMethod]
         protected virtual void DataStore_Add_Item_Adds_Item()
         {
             // Arrange
@@ -71,7 +68,6 @@ namespace Qaud.Test
             CleanOutItemFromStore(item);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Query_For_Item_Returns_Result()
         {
             // Arrange
@@ -109,7 +105,6 @@ namespace Qaud.Test
             CleanOutItemFromStore(item);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Query_For_All_Returns_All()
         {
             // Arrange
@@ -159,7 +154,6 @@ namespace Qaud.Test
                 CleanOutItemFromStore(item);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Update_Modifies_Item()
         {
             // Arrange
@@ -184,7 +178,6 @@ namespace Qaud.Test
             CleanOutItemFromStore(result);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Partial_Update_Modifies_Item()
         {
             // Arrange
@@ -230,7 +223,6 @@ namespace Qaud.Test
             CleanOutItemFromStore(result);
         }
 
-        [TestMethod]
         protected virtual void DataStore_DeleteByKey_Removes_Item()
         {
             // Arrange 
@@ -255,7 +247,6 @@ namespace Qaud.Test
             Assert.IsNull(queryresult);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Delete_Item_Removes_Item()
         {
             // Arrange 
@@ -281,7 +272,6 @@ namespace Qaud.Test
             Assert.IsNull(queryresult);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Delete_Item_Range_Single_Removes_Item()
         {
             // Arrange 
@@ -306,7 +296,6 @@ namespace Qaud.Test
             Assert.IsNull(queryresult);
         }
 
-        [TestMethod]
         protected virtual void DataStore_Delete_Item_Range_Removes_Many_Items()
         {
             // Arrange

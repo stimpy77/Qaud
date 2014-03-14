@@ -241,7 +241,7 @@ namespace Qaud.MemoryTable
         /// </summary>
         bool IDataStore<T>.SupportsGeneratedKeys
         {
-            get { return false; }
+            get { return true; }
         }
     }
 }

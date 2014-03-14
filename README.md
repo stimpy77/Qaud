@@ -28,8 +28,8 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         bool SupportsGeneratedKeys { get; }
         bool SupportsTransactionScope { get; }
         void SaveChanges();
-        object DataSetImplementation { get; }
-        object DataContextImplementation { get; }
+        object DataSet { get; }
+        object DataContext { get; }
 
 
 ---

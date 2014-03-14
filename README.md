@@ -22,7 +22,7 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         void DeleteRange(IEnumerable<T> items);
         
         // metadata (most should be implemented on the explicit interface, to conveniently hide from consumer code)
-        bool AutoSave { get; set; }               // indicates deferrable changes
+        bool AutoSave { get; set; }               // if false, defers changes; some implementations do not support this
         void SaveChanges();                       // apply changes; noop if AutoSave == true
         bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF
         bool SupportsComplexStructures { get; }   // indicates support for multilevel object graphs in one entry as with RavenDB

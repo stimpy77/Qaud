@@ -25,6 +25,7 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         bool AutoSave { get; set; }
         bool SupportsNestedRelationships { get; }
         bool SupportsComplexStructures { get; }
+        bool SupportsGeneratedKeys { get; }
         bool SupportsTransactionScope { get; }
         void SaveChanges();
         object DataSetImplementation { get; }

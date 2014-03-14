@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.MemoryTable.Test", "Qa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.RavenDB.Test", "Qaud.RavenDB.Test\Qaud.RavenDB.Test.csproj", "{3D32219B-574E-4962-B72D-41519869E3AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{73A3A003-48DD-4A4A-89E7-4097F8F10B53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1AEBA855-9E70-4A55-83A4-A70A17D1C190} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
+		{A1DB05A7-96DA-4CC6-8A7B-A6BB4E25F0AA} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
+		{3D32219B-574E-4962-B72D-41519869E3AA} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
+		{86FF6990-E6A6-49B4-8132-13374CABDE8A} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
 	EndGlobalSection
 EndGlobal

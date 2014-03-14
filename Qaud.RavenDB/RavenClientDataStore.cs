@@ -92,7 +92,7 @@ namespace Qaud.RavenDB
             }
         }
 
-        public virtual void UpdatePartial(object changes)
+        public virtual T UpdatePartial(object changes)
         {
             if (!_memberResolver.KeyPropertyMembers.Any())
             {
@@ -109,6 +109,7 @@ namespace Qaud.RavenDB
             _memberResolver.ApplyPartial(target, changes);
             session.Store(target);
             if (AutoSave) SaveChanges();
+            return target;
         }
 
         public virtual void Delete(T item)

@@ -72,8 +72,8 @@ namespace Qaud
         /// When implemented, applies changes to the specified <typeparamref name="T"/> object to this data store. Only properties included in the object are modified.
         /// </summary>
         /// <param name="item"></param>
-        /// <returns></returns>
-        void UpdatePartial(object item);
+        /// <returns>A fully populated instance of <typeparamref name="T"/>.</returns>
+        T UpdatePartial(object item);
 
         /// <summary>
         /// When implemented, deletes and destroys the specified <typeparamref name="T"/> object from this data store.

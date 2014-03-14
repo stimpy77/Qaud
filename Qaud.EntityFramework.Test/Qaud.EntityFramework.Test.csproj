@@ -62,7 +62,7 @@
   <ItemGroup>
     <Compile Include="EntityFrameworkDataStoreSimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestEFDataStore.cs" />
+    <Compile Include="TestEFDataSetStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qaud.EntityFramework\Qaud.EntityFramework.csproj">

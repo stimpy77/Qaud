@@ -44,61 +44,61 @@ namespace Qaud.EntityFramework.Test
         }
 
         [TestMethod]
-        public override void DataStore_Add_Item_Adds_Item()
+        public void EFDataSetDataStore_Add_Item_Adds_Item()
         {
             base.DataStore_Add_Item_Adds_Item();
         }
 
         [TestMethod]
-        public override void DataStore_Create_Instantiates_T()
+        public void EFDataSetDataStore_Create_Instantiates_T()
         {
             base.DataStore_Create_Instantiates_T();
         }
 
         [TestMethod]
-        public override void DataStore_DeleteByKey_Removes_Item()
+        public void EFDataSetDataStore_DeleteByKey_Removes_Item()
         {
             base.DataStore_DeleteByKey_Removes_Item();
         }
 
         [TestMethod]
-        public override void DataStore_Delete_Item_Range_Removes_Many_Items()
+        public void EFDataSetDataStore_Delete_Item_Range_Removes_Many_Items()
         {
             base.DataStore_Delete_Item_Range_Removes_Many_Items();
         }
 
         [TestMethod]
-        public override void DataStore_Delete_Item_Range_Single_Removes_Item()
+        public void EFDataSetDataStore_Delete_Item_Range_Single_Removes_Item()
         {
             base.DataStore_Delete_Item_Range_Single_Removes_Item();
         }
 
         [TestMethod]
-        public override void DataStore_Delete_Item_Removes_Item()
+        public void EFDataSetDataStore_Delete_Item_Removes_Item()
         {
             base.DataStore_Delete_Item_Removes_Item();
         }
 
         [TestMethod]
-        public override void DataStore_Partial_Update_Modifies_Item()
+        public void EFDataSetDataStore_Partial_Update_Modifies_Item()
         {
             base.DataStore_Partial_Update_Modifies_Item();
         }
 
         [TestMethod]
-        public override void DataStore_Query_For_All_Returns_All()
+        public void EFDataSetDataStore_Query_For_All_Returns_All()
         {
             base.DataStore_Query_For_All_Returns_All();
         }
 
         [TestMethod]
-        public override void DataStore_Query_For_Item_Returns_Result()
+        public void EFDataSetDataStore_Query_For_Item_Returns_Result()
         {
             base.DataStore_Query_For_Item_Returns_Result();
         }
 
         [TestMethod]
-        public override void DataStore_Update_Modifies_Item()
+        public void EFDataSetDataStore_Update_Modifies_Item()
         {
             base.DataStore_Update_Modifies_Item();
         }

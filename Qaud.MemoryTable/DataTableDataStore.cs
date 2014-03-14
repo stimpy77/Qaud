@@ -119,7 +119,7 @@ namespace Qaud.MemoryTable
             foreach (T item in items) Update(item);
         }
 
-        public virtual void UpdatePartial(object item)
+        public virtual T UpdatePartial(object item)
         {
             T current = Create();
             _memberResolver.ApplyPartial(current, item); // populate ID'd entity
@@ -128,6 +128,8 @@ namespace Qaud.MemoryTable
             Update(current);                             // save changes
 
             if (AutoSave) SaveChanges();
+
+            return current;
         }
 
         public virtual void Delete(T item)

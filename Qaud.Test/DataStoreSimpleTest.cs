@@ -19,7 +19,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Create_Instantiates_T()
+        protected virtual void DataStore_Create_Instantiates_T()
         {
             // Arrange
             // nothing to do
@@ -33,7 +33,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Add_Item_Adds_Item()
+        protected virtual void DataStore_Add_Item_Adds_Item()
         {
             // Arrange
             FooModel item = _dataStore.Create();
@@ -72,7 +72,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Query_For_Item_Returns_Result()
+        protected virtual void DataStore_Query_For_Item_Returns_Result()
         {
             // Arrange
             FooModel item = _dataStore.Create();
@@ -110,7 +110,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Query_For_All_Returns_All()
+        protected virtual void DataStore_Query_For_All_Returns_All()
         {
             // Arrange
             var items = new List<FooModel>();
@@ -160,7 +160,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Update_Modifies_Item()
+        protected virtual void DataStore_Update_Modifies_Item()
         {
             // Arrange
             var item = _dataStore.Create();
@@ -185,7 +185,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Partial_Update_Modifies_Item()
+        protected virtual void DataStore_Partial_Update_Modifies_Item()
         {
             // Arrange
             var item = _dataStore.Create();
@@ -231,7 +231,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_DeleteByKey_Removes_Item()
+        protected virtual void DataStore_DeleteByKey_Removes_Item()
         {
             // Arrange 
             var item = _dataStore.Create();
@@ -256,7 +256,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Delete_Item_Removes_Item()
+        protected virtual void DataStore_Delete_Item_Removes_Item()
         {
             // Arrange 
             var item = _dataStore.Create();
@@ -282,7 +282,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Delete_Item_Range_Single_Removes_Item()
+        protected virtual void DataStore_Delete_Item_Range_Single_Removes_Item()
         {
             // Arrange 
             var item = _dataStore.Create();
@@ -307,7 +307,7 @@ namespace Qaud.Test
         }
 
         [TestMethod]
-        public virtual void DataStore_Delete_Item_Range_Removes_Many_Items()
+        protected virtual void DataStore_Delete_Item_Range_Removes_Many_Items()
         {
             // Arrange
             var items = new List<FooModel>();

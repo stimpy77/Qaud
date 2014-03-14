@@ -21,7 +21,7 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         void DeleteByKey(params object[] keyvalue);
         void DeleteRange(IEnumerable<T> items);
         
-        // metadata (most should be implemented on the explicit interface, to conveniently hide from consumer code)
+        // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
         bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true
         void SaveChanges();                       // apply changes; noop if AutoSave == true
         bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF

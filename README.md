@@ -12,7 +12,9 @@ solution builds upon that premise.
 
 For example, someone implementing a dynamic web site, such as an online store, might use `IDataStore<T>` for all
 data storage operations because he might not know whether the deployed solution will build upon MongoDB, MySQL, 
-SQL Server, or some other server.
+SQL Server, or some other server. By using `IDataStore<T>` for all DAL, the prototype solution can switch the 
+underlying database, NoSQL, or in-memory data storage implementation by only changing the IoC/DI initializer, 
+assuming `IDataStore<T>` has been generically implemented for the chosen actual database implementation.
 
 Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon `ICrud<T>`, 
 can utilize in-memory implementations when implementing functional tests.

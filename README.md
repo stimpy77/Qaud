@@ -16,8 +16,8 @@ SQL Server, or some other server. By using `IDataStore<T>` for all DAL, the prot
 underlying database, NoSQL, or in-memory data storage implementation by only changing the IoC/DI initializer, 
 assuming `IDataStore<T>` has been generically implemented for the chosen actual database implementation.
 
-Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon `ICrud<T>`, 
-can utilize in-memory implementations when implementing functional tests.
+Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon 
+`ICrud<T>`/`ICrudEx<T>`, can utilize in-memory implementations when implementing functional tests.
 
 ## `ICrud<T>` has come at last.
 

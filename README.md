@@ -29,7 +29,7 @@ Building applications upon `IDataStore<T>` would only be recommended for acceler
 development** or for applications where **DAL performance is less important than DAL targeting versatility**.
 An enterprise environment that is heavily dependent upon the Microsoft stack, including SQL Server, would not
 benefit from `IDataStore<T>` as much as a development team or individual that is focused on building an 
-application with an unknown or or wide range of target environments and/or storage dependencies.
+application with an unknown or wide range of target environments and/or storage dependencies.
 
 Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon 
 `ICrud<T>`/`ICrudEx<T>`, can utilize in-memory implementations when implementing functional tests.

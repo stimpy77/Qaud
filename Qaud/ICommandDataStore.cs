@@ -3,6 +3,15 @@ using System.Linq;
 
 namespace Qaud
 {
+    /*
+     * 
+     * 
+     * This is just a placeholder for code design work in progress. Its intention is to facilitate 
+     * an interface for CQS or CQRS based repositories.
+     * 
+     * 
+     * 
+     */
     public interface ICommandDataStore<T>
     {
 

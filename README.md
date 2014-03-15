@@ -24,7 +24,9 @@ The complete interface for a repository is `IDataStore<T>`:
 
         public interface IDataStore<T> : ICrudEx<T>, IHasQueryable<T>
         {
+
         /*ICrudEx<T> includes these:
+
             T Create();
             void Add(T item);
             void Add(T item, out T result);
@@ -37,9 +39,14 @@ The complete interface for a repository is `IDataStore<T>`:
             void Delete(params object[] keyvalue);
             void DeleteItem(T item);
             void DeleteRange(IEnumerable<T> items);
+
         */
 
+        /*IHasQueryable<T> has this:
+
             IQueryable<T> Query { get; }
+
+        */
             
             // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
             bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true

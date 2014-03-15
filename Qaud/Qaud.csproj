@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICommandDataStore.cs" />
+    <Compile Include="ICrud.cs" />
     <Compile Include="IDataStore.cs" />
     <Compile Include="EntityMemberResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

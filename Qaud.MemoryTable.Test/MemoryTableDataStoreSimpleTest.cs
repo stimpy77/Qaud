@@ -7,14 +7,14 @@ using Qaud.Test;
 namespace Qaud.MemoryTable.Test
 {
     [TestClass]
-    public class MemoryTableDataStoreSimpleTest : DataStoreSimpleTest
+    public class MemoryDataTableStoreSimpleTest : DataStoreSimpleTest
     {
-        public class TestMemoryTableDataStore : DataTableDataStore<FooModel>
+        public class TestMemoryDataTableStore : DataTableDataStore<FooModel>
         {
             
         }
-        public MemoryTableDataStoreSimpleTest()
-            : base(new TestMemoryTableDataStore())
+        public MemoryDataTableStoreSimpleTest()
+            : base(new TestMemoryDataTableStore())
         {
         }
 
@@ -41,61 +41,61 @@ namespace Qaud.MemoryTable.Test
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Add_Item_Adds_Item()
+        public void MemoryDataTableStore_Add_Item_Adds_Item()
         {
             base.DataStore_Add_Item_Adds_Item();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Create_Instantiates_T()
+        public void MemoryDataTableStore_Create_Instantiates_T()
         {
             base.DataStore_Create_Instantiates_T();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_DeleteByKey_Removes_Item()
+        public void MemoryDataTableStore_DeleteByKey_Removes_Item()
         {
             base.DataStore_DeleteByKey_Removes_Item();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Delete_Item_Range_Removes_Many_Items()
+        public void MemoryDataTableStore_Delete_Item_Range_Removes_Many_Items()
         {
             base.DataStore_Delete_Item_Range_Removes_Many_Items();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Delete_Item_Range_Single_Removes_Item()
+        public void MemoryDataTableStore_Delete_Item_Range_Single_Removes_Item()
         {
             base.DataStore_Delete_Item_Range_Single_Removes_Item();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Delete_Item_Removes_Item()
+        public void MemoryDataTableStore_Delete_Item_Removes_Item()
         {
             base.DataStore_Delete_Item_Removes_Item();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Partial_Update_Modifies_Item()
+        public void MemoryDataTableStore_Partial_Update_Modifies_Item()
         {
             base.DataStore_Partial_Update_Modifies_Item();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Query_For_All_Returns_All()
+        public void MemoryDataTableStore_Query_For_All_Returns_All()
         {
             base.DataStore_Query_For_All_Returns_All();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Query_For_Item_Returns_Result()
+        public void MemoryDataTableStore_Query_For_Item_Returns_Result()
         {
             base.DataStore_Query_For_Item_Returns_Result();
         }
 
         [TestMethod]
-        public void MemoryTableDataStore_Update_Modifies_Item()
+        public void MemoryDataTableStore_Update_Modifies_Item()
         {
             base.DataStore_Update_Modifies_Item();
         }

@@ -5,7 +5,7 @@ QAUD is an interface plus implementations for QAUD, or CRUD, operations.
 It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a 
 basic set of alteration operations.
 
-## Supported Implementations
+## Supported Implementations 
 
 * An **Entity Framework** implementation is passing initial very basic tests.
 * A **RavenDB** implementation is passing initial very basic tests.

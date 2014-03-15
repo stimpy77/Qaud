@@ -2,7 +2,16 @@ QAUD (Query Add Update Delete) v0.2
 ==================================
 <sub><sup>(QAUD is not a word. Don't fix it.)</sup></sub>
 QAUD is an interface plus implementations for QAUD, or CRUD, operations. 
-It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a basic set of alteration operations.
+It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a 
+basic set of alteration operations.
+
+## Supported Implementations
+
+* **EntityFramework is passing initial very basic tests.**
+* **RavenDB is passing initial very basic tests.**
+* **A DataTable implementation is passing initial very basic tests.**
+* **A SortedDictionary implementation is passing initial very basic tests.**
+* Other ORMs and data repositories are yet to be added.
 
 ## Background
 
@@ -15,6 +24,11 @@ data storage operations because he might not know whether the deployed solution 
 SQL Server, or some other server. By using `IDataStore<T>` for all DAL, the prototype solution can switch the 
 underlying database, NoSQL, or in-memory data storage implementation by only changing the IoC/DI initializer, 
 assuming `IDataStore<T>` has been generically implemented for the chosen actual database implementation.
+
+Building applications upon `IDataStore<T>` would only be recommended for accelerating **prototype application 
+development** or for applications where **DAL performance is less important than DAL targeting versatility**.
+An enterprise environment that is heavily dependent upon the Microsoft stack, including SQL Server, would not
+benefit from `IDataStore<T>` as much as a development team or individual that is
 
 Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon 
 `ICrud<T>`/`ICrudEx<T>`, can utilize in-memory implementations when implementing functional tests.
@@ -102,14 +116,6 @@ The complete interface for a repository is `IDataStore<T>`; the following summar
 
 Note: Most of these non-CRUD support members explicitly declared on `IDataStore<T>` should be implemented 
 explicitly, to conveniently hide from consumer code (i.e. from intellisense).
-
----
-
-* **EntityFramework is passing initial very basic tests.**
-* **RavenDB is passing initial very basic tests.**
-* **A DataTable implementation is passing initial very basic tests.**
-* **A SortedDictionary implementation is passing initial very basic tests.**
-* Other ORMs and data repositories are yet to be added.
 
 _____
 

@@ -17,7 +17,7 @@ basic set of alteration operations.
 
 The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not know
 the full measure of the technology behind the DAL. Most DALs start with key-based table or document structures, so this 
-solution builds upon that premise. 
+solution builds upon that premise.
 
 For example, someone implementing a dynamic web site, such as an online store, might use `IDataStore<T>` for all
 data storage operations because he might not know whether the deployed solution will build upon MongoDB, MySQL, 

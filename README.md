@@ -17,8 +17,8 @@ https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
         void Update(T item);
         void UpdateRange(IEnumerable<T> items);
         T UpdatePartial(object item);
-        void Delete(T item);
-        void DeleteByKey(params object[] keyvalue);
+        void Delete(params object[] keyvalue);
+        void DeleteItem(T item);
         void DeleteRange(IEnumerable<T> items);
         
         // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)

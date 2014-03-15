@@ -4,6 +4,19 @@ QAUD (Query Add Update Delete) v0.2
 QAUD is an interface plus implementations for QAUD, or CRUD, operations. 
 It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a basic set of alteration operations.
 
+## Background
+
+The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not know
+the full measure of the technology behind the DAL. Most DALs start with key-based table or document structures, so this 
+solution builds upon that premise.
+
+For example, someone implementing a dynamic web site, such as an online store, might use `IDataStore<T>` for all
+data storage operations because he might not know whether the deployed solution will build upon MongoDB, MySQL, 
+SQL Server, or some other server.
+
+Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon `ICrud<T>`, 
+can utilize in-memory implementations when implementing functional tests.
+
 ## `ICrud<T>` has come at last.
 
 The base interface is `ICrud<T>`:
@@ -107,8 +120,3 @@ A few usage notes:
 4. Provider implementations should ideally "hide" support members: `DataSetImplementation`, `DataContextImplementation`, `SupportsNestedRelationships`, `SupportsTransactionScope`, and `SupportsComplexStructures`. These are not interesting repository properties/methods for a repository interface consumer, but they are on the interface for identifying implementation behaviors, when you need to know them.
 5. Some features require reflection, such as `UpdatePartial()`, which is like `Update()` but takes any object that has the same key field(s) and that has only the properties potentially containing changes. If you do not want to utilize any feature that uses reflection, do not use data provider implementations that impose it, and avoid these special interface member(s).
 
-### Background
-
-The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not know
-the full measure of the technology behind the DAL. Most DALs start with key-based table or document structures, so this 
-solution builds upon that premise.

@@ -7,10 +7,10 @@ basic set of alteration operations.
 
 ## Supported Implementations
 
-* **EntityFramework is passing initial very basic tests.**
-* **RavenDB is passing initial very basic tests.**
-* **A DataTable implementation is passing initial very basic tests.**
-* **A SortedDictionary implementation is passing initial very basic tests.**
+* An **Entity Framework** implementation is passing initial very basic tests.
+* A **RavenDB** implementation is passing initial very basic tests.
+* A **DataTable** implementation is passing initial very basic tests.
+* A **SortedDictionary** implementation is passing initial very basic tests.
 * Other ORMs and data repositories are yet to be added.
 
 ## Background

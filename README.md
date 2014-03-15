@@ -1,36 +1,55 @@
-Qaud
-====
+QAUD (Query Add Update Delete) v0.2
+==================================
+<sub><sup>(QAUD is not a word. Don't fix it.)</sup></sub>
+QAUD is an interface plus implementations for QAUD, or CRUD, operations. It's ICrud, basically.
 
-Interface and implementations for: Query, Add, Update, Delete. It's ICrud, basically. (Qaud is not a word. Don't fix it.)
+The base interface is `ICrud<T>`:
 
-The interface itself is IDataStore<T>:
+        public interface ICrud<T> : ICreate<T>, 
+                                    IAddItem<T>, 
+                                    IFind<T>, 
+                                    IUpdate<T>, 
+                                    IDelete
+        {
+            T     Create ();
+            void  Add    (T item);
+            T     Find   (params object[] key);
+            void  Update (T item);
+            void  Delete (params object[] key);
+        }
 
-https://github.com/stimpy77/Qaud/blob/master/Qaud/IDataStore.cs
+.. plus extensions in `ICrudEx<T>` for common variations and convenience operations.
 
-        T Create();
-        void Add(T item);
-        void Add(T item, out T result);
-        void AddRange(IEnumerable<T> items);
-        IQueryable<T> Query { get; }
-        T FindMatch(T lookup);
-        T Find(params object[] keyvalue);
-        void Update(T item);
-        void UpdateRange(IEnumerable<T> items);
-        T UpdatePartial(object item);
-        void Delete(params object[] keyvalue);
-        void DeleteItem(T item);
-        void DeleteRange(IEnumerable<T> items);
-        
-        // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
-        bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true
-        void SaveChanges();                       // apply changes; noop if AutoSave == true
-        bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF
-        bool SupportsComplexStructures { get; }   // indicates support for multilevel object graphs in one entry as with RavenDB
-        bool SupportsGeneratedKeys { get; }       // indicates support for [DatabaseGenerated(Identity)] 
-        bool SupportsTransactionScope { get; }    // indicates support for using(var scope = new TransactionScope()) { .. }
-        object DataSet { get; }                   // gets the underlying data table, data set, dictionary, or whatever is doing the work
-        object DataContext { get; }               // gets the object that contains the connection, if any, to the database
+The complete interface for a repository is `IDataStore<T>`:
 
+        public interface IDataStore<T> : ICrudEx<T>, IHasQueryable<T>
+        {
+        /*ICrudEx<T> includes these:
+            T Create();
+            void Add(T item);
+            void Add(T item, out T result);
+            void AddRange(IEnumerable<T> items);
+            IQueryable<T> Query { get; }
+            T FindMatch(T lookup);
+            T Find(params object[] keyvalue);
+            void Update(T item);
+            void UpdateRange(IEnumerable<T> items);
+            T UpdatePartial(object item);
+            void Delete(params object[] keyvalue);
+            void DeleteItem(T item);
+            void DeleteRange(IEnumerable<T> items);
+        */
+            
+            // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
+            bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true
+            void SaveChanges();                       // apply changes; noop if AutoSave == true
+            bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF
+            bool SupportsComplexStructures { get; }   // indicates support for multilevel object graphs in one entry as with RavenDB
+            bool SupportsGeneratedKeys { get; }       // indicates support for [DatabaseGenerated(Identity)] 
+            bool SupportsTransactionScope { get; }    // indicates support for using(var scope = new TransactionScope()) { .. }
+            object DataSet { get; }                   // gets the underlying data table, data set, dictionary, or whatever is doing the work
+            object DataContext { get; }               // gets the object that contains the connection, if any, to the database
+        }
 
 ---
 

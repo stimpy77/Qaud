@@ -181,9 +181,9 @@ namespace Qaud
         /// When implemented, performs a lookup based on the given item's key column(s). If the item is found as 
         /// locally cached in a modified state, the modified cached item is returned.
         /// </summary>
-        /// <param name="keyvalue">The key column value(s) to perform the lookup.</param>
+        /// <param name="key">The key column value(s) to perform the lookup.</param>
         /// <returns>A matching entity, or null.</returns>
-        T Find(params object[] keyvalue);
+        T Find(params object[] key);
     }
 
     /// <summary>

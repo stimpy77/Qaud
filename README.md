@@ -29,7 +29,6 @@ The complete interface for a repository is `IDataStore<T>`:
             void Add(T item);
             void Add(T item, out T result);
             void AddRange(IEnumerable<T> items);
-            IQueryable<T> Query { get; }
             T FindMatch(T lookup);
             T Find(params object[] keyvalue);
             void Update(T item);
@@ -39,6 +38,8 @@ The complete interface for a repository is `IDataStore<T>`:
             void DeleteItem(T item);
             void DeleteRange(IEnumerable<T> items);
         */
+
+            IQueryable<T> Query { get; }
             
             // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
             bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true

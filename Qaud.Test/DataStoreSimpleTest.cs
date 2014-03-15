@@ -231,7 +231,7 @@ namespace Qaud.Test
             SaveChanges();
 
             // Act
-            _dataStore.DeleteByKey(item.ID);
+            _dataStore.Delete(item.ID);
             _dataStore.SaveChanges();
             FooModel result = null;
             FooModel queryresult = null;
@@ -256,7 +256,7 @@ namespace Qaud.Test
             item = GetItemById(item.ID);
 
             // Act
-            _dataStore.Delete(item);
+            _dataStore.DeleteItem(item);
             _dataStore.SaveChanges();
             FooModel result = null;
             FooModel queryresult = null;

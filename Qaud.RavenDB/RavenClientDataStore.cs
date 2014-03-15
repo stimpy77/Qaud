@@ -112,7 +112,7 @@ namespace Qaud.RavenDB
             return target;
         }
 
-        public virtual void Delete(T item)
+        public virtual void DeleteItem(T item)
         {
             IDocumentSession session = GetSession();
             var key = GetItemKey(item);
@@ -121,14 +121,14 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        public virtual void DeleteByKey(params object[] keyvalue)
+        public virtual void Delete(params object[] keyvalue)
         {
-            Delete(Find(keyvalue));
+            DeleteItem(Find(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
         {
-            foreach (T item in items) Delete(item);
+            foreach (T item in items) DeleteItem(item);
         }
 
         public virtual bool AutoSave { get; set; }
@@ -228,6 +228,14 @@ namespace Qaud.RavenDB
         protected virtual IDocumentSession GetSession()
         {
             return _session ?? (_session = _docStore.OpenSession());
+        }
+
+        /// <summary>
+        /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
+        /// </summary>
+        bool IDataStore<T>.CanQueueChanges
+        {
+            get { return true; }
         }
     }
 }

@@ -175,15 +175,15 @@ namespace Qaud.EntityFramework
         ///     Removes the given item from the underlying DbSet.
         /// </summary>
         /// <param name="item"></param>
-        public virtual void Delete(T item)
+        public virtual void DeleteItem(T item)
         {
             _dbSet.Remove(item);
             if (AutoSave) SaveChanges();
         }
 
-        public virtual void DeleteByKey(params object[] keyvalue)
+        public virtual void Delete(params object[] keyvalue)
         {
-            Delete(Find(keyvalue));
+            DeleteItem(Find(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
@@ -254,6 +254,14 @@ namespace Qaud.EntityFramework
         /// such as when using <code>using (var transaction = new TransactionScope()) { .. }</code>
         /// </summary>
         bool IDataStore<T>.SupportsTransactionScope
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
+        /// </summary>
+        bool IDataStore<T>.CanQueueChanges
         {
             get { return true; }
         }

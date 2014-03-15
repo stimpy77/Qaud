@@ -108,13 +108,13 @@ namespace Qaud.MemoryTable
             return current;
         }
 
-        public void Delete(T item)
+        public void DeleteItem(T item)
         {
             var matchingItem = FindMatch(item);
             _dictionary.Remove(GetItemKey(matchingItem));
         }
 
-        public void DeleteByKey(params object[] keyvalue)
+        public void Delete(params object[] keyvalue)
         {
             var matchingItem = Find(keyvalue);
             _dictionary.Remove(GetItemKey(matchingItem));
@@ -320,6 +320,14 @@ namespace Qaud.MemoryTable
                 throw new MissingPrimaryKeyException("Invalid key in " + item.GetType().FullName);
             }
             return key;
+        }
+
+        /// <summary>
+        /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
+        /// </summary>
+        bool IDataStore<T>.CanQueueChanges
+        {
+            get { return true; }
         }
     }
 }

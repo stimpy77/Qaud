@@ -132,20 +132,20 @@ namespace Qaud.MemoryTable
             return current;
         }
 
-        public virtual void Delete(T item)
+        public virtual void DeleteItem(T item)
         {
             _dataTable.Rows.Remove(FindRow(item));
             if (AutoSave) SaveChanges();
         }
 
-        public virtual void DeleteByKey(params object[] keyvalue)
+        public virtual void Delete(params object[] keyvalue)
         {
-            Delete(Find(keyvalue));
+            DeleteItem(Find(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
         {
-            foreach (T item in items) Delete(item);
+            foreach (T item in items) DeleteItem(item);
         }
 
         public virtual bool AutoSave { get; set; }
@@ -240,6 +240,14 @@ namespace Qaud.MemoryTable
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
         /// </summary>
         bool IDataStore<T>.SupportsGeneratedKeys
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
+        /// </summary>
+        bool IDataStore<T>.CanQueueChanges
         {
             get { return true; }
         }

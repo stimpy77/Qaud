@@ -4,6 +4,8 @@ QAUD (Query Add Update Delete) v0.2
 QAUD is an interface plus implementations for QAUD, or CRUD, operations. 
 It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a basic set of alteration operations.
 
+## `ICrud<T>` has come at last.
+
 The base interface is `ICrud<T>`:
 
         public interface ICrud<T> : ICreate<T>, 
@@ -12,14 +14,19 @@ The base interface is `ICrud<T>`:
                                     IUpdate<T>, 
                                     IDelete
         {
+        /* implemented by above declaration:
+
             T     Create ();
             void  Add    (T item);
             T     Find   (params object[] key);
             void  Update (T item);
             void  Delete (params object[] key);
+        */
         }
 
 .. plus extensions in `ICrudEx<T>` for common variations and convenience operations.
+
+## Full Generic Repository Interface
 
 The complete interface for a repository is `IDataStore<T>`:
 
@@ -49,16 +56,38 @@ The complete interface for a repository is `IDataStore<T>`:
 
         */
             
-            // metadata (most should be implemented explicitly on the interface, to conveniently hide from consumer code)
-            bool AutoSave { get; set; }               // if false, defers changes; some implementations force AutoSave=true
-            void SaveChanges();                       // apply changes; noop if AutoSave == true
-            bool SupportsNestedRelationships { get; } // indicates support for "navigation properties" as with EF
-            bool SupportsComplexStructures { get; }   // indicates support for multilevel object graphs in one entry as with RavenDB
-            bool SupportsGeneratedKeys { get; }       // indicates support for [DatabaseGenerated(Identity)] 
-            bool SupportsTransactionScope { get; }    // indicates support for using(var scope = new TransactionScope()) { .. }
-            object DataSet { get; }                   // gets the underlying data table, data set, dictionary, or whatever is doing the work
-            object DataContext { get; }               // gets the object that contains the connection, if any, to the database
+
+            // if false, defers changes; false not always supported, see CanQueueChanges
+            bool AutoSave { get; set; }
+
+            // apply changes; noop if AutoSave == true
+            void SaveChanges();
+
+            // indicates whether AutoSave can be set to false
+            void CanQueueChanges();
+
+            // indicates support for "navigation properties" as with EF
+            bool SupportsNestedRelationships { get; } 
+
+            // indicates support for multilevel object graphs in one entry as with RavenDB
+            bool SupportsComplexStructures { get; }
+
+            // indicates support for [DatabaseGenerated(Identity)] 
+            bool SupportsGeneratedKeys { get; }
+
+            // indicates support for using(var scope = new TransactionScope()) { .. }
+            bool SupportsTransactionScope { get; }
+
+            // gets the underlying data table, data set, dictionary, or whatever is doing the work
+            object DataSet { get; }
+
+            // gets the object that contains the connection, if any, to the database
+            object DataContext { get; }
         }
+
+
+Note: Most of the members declared on `IDataStore<T>` should be implemented explicitly, to 
+conveniently hide from consumer code.
 
 ---
 
@@ -77,3 +106,9 @@ A few usage notes:
 3. Any provider must support LINQ. The purpose of Qaud is to add `Add`, `Update`, and `Delete*` commands (plus some helpful touches such as `UpdatePartial()`) to IQueryable in a common and useful interface.
 4. Provider implementations should ideally "hide" support members: `DataSetImplementation`, `DataContextImplementation`, `SupportsNestedRelationships`, `SupportsTransactionScope`, and `SupportsComplexStructures`. These are not interesting repository properties/methods for a repository interface consumer, but they are on the interface for identifying implementation behaviors, when you need to know them.
 5. Some features require reflection, such as `UpdatePartial()`, which is like `Update()` but takes any object that has the same key field(s) and that has only the properties potentially containing changes. If you do not want to utilize any feature that uses reflection, do not use data provider implementations that impose it, and avoid these special interface member(s).
+
+### Background
+
+The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not know
+the full measure of the technology behind the DAL. Most DALs start with key-based table or document structures, so this 
+solution builds upon that premise.

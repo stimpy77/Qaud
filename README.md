@@ -21,7 +21,7 @@ Another situation is where an application that builds entirely upon `IDataStore<
 
 ## `ICrud<T>` has come at last.
 
-The base interface is `ICrud<T>`:
+The base interface is `ICrud<T>`; the following summarizes it:
 
         public interface ICrud<T> : ICreate<T>, 
                                     IAddItem<T>, 
@@ -43,12 +43,12 @@ The base interface is `ICrud<T>`:
 
 ## Full Generic Repository Interface
 
-The complete interface for a repository is `IDataStore<T>`:
+The complete interface for a repository is `IDataStore<T>`; the following summarizes it:
 
         public interface IDataStore<T> : ICrudEx<T>, IHasQueryable<T>
         {
 
-        /*ICrudEx<T> includes these:
+        /*  ICrudEx<T> includes these:
 
             T Create();
             void Add(T item);
@@ -65,10 +65,9 @@ The complete interface for a repository is `IDataStore<T>`:
 
         */
 
-        /*IHasQueryable<T> has this:
+        /*  IHasQueryable<T> includes this:
 
             IQueryable<T> Query { get; }
-
         */
             
 
@@ -101,8 +100,8 @@ The complete interface for a repository is `IDataStore<T>`:
         }
 
 
-Note: Most of the members declared on `IDataStore<T>` should be implemented explicitly, to 
-conveniently hide from consumer code.
+Note: Most of these non-CRUD support members explicitly declared on `IDataStore<T>` should be implemented 
+explicitly, to conveniently hide from consumer code (i.e. from intellisense).
 
 ---
 

@@ -9,6 +9,7 @@ basic set of alteration operations.
 
 * An **Entity Framework** implementation is passing initial very basic tests.
 * A **RavenDB client** implementation is passing initial very basic tests.
+* A **MongoDB client** implementation is passing initial very basic tests.
 * An in-memory **DataTable** implementation is passing initial very basic tests.
 * A **SortedDictionary** implementation is passing initial very basic tests.
 * Other ORMs and data repositories are yet to be added.

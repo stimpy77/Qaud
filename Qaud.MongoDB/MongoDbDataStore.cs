@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -151,7 +152,7 @@ namespace Qaud.MongoDB
             return query;
         }
 
-        public virtual T Find(params object[] key)
+        public virtual T Get(params object[] key)
         {
             var query = CreateQueryByKey(key);
             return _collection.FindOne(query);
@@ -159,7 +160,7 @@ namespace Qaud.MongoDB
 
         public void Update(T item)
         {
-            var orig = FindMatch(item);
+            var orig = Get(item);
             _memberResolver.ApplyChanges(orig, item);
             _collection.Save(orig);
             AutoSaveIfAutoSaveEnabled();
@@ -196,7 +197,7 @@ namespace Qaud.MongoDB
             AutoSaveIfAutoSaveEnabled();
         }
 
-        public T FindMatch(T lookup)
+        public T Get(T lookup)
         {
             var query = CreateQueryByKey(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
             return _collection.FindOne(query);
@@ -225,9 +226,34 @@ namespace Qaud.MongoDB
             return changed;
         }
 
-        public IQueryable<T> Query
+        protected virtual IQueryable<T> Query
         {
             get { return _collection.AsQueryable(); }
+        }
+
+        public virtual IEnumerator<T> GetEnumerator()
+        {
+            return this.Query.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return Query.ElementType; }
+        }
+
+        System.Linq.Expressions.Expression IQueryable.Expression
+        {
+            get { return Query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return Query.Provider; }
         }
 
         bool IDataStore<T>.AutoSave

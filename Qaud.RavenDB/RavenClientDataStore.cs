@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -53,19 +54,44 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        public virtual IQueryable<T> Query
+        protected virtual IQueryable<T> Query
         {
             get { return GetSession().Query<T>(); }
         }
 
-        public virtual T FindMatch(T lookup)
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this.Query.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return Query.ElementType; }
+        }
+
+        System.Linq.Expressions.Expression IQueryable.Expression
+        {
+            get { return Query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return Query.Provider; }
+        }
+
+        public virtual T Get(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();;
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
             return GetSession().Load<T>(keyprops.Single().GetValue(lookup).ToString());
         }
 
-        public virtual T Find(params object[] keyvalue)
+        public virtual T Get(params object[] keyvalue)
         {
             var key = keyvalue.Single().ToString();
             return GetSession().Load<T>(key);
@@ -123,7 +149,7 @@ namespace Qaud.RavenDB
 
         public virtual void Delete(params object[] keyvalue)
         {
-            DeleteItem(Find(keyvalue));
+            DeleteItem(Get(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
@@ -237,5 +263,6 @@ namespace Qaud.RavenDB
         {
             get { return true; }
         }
+
     }
 }

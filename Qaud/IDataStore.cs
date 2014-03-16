@@ -8,7 +8,7 @@ namespace Qaud
     /// Describes a data store that supports CRUD operations -- or rather, QAUD operations (Query, Add, Update, Delete).
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IDataStore<T> : ICrudEx<T>, IHasQueryable<T>
+    public interface IDataStore<T> : ICrudEx<T>
     {
 
         /// <summary>

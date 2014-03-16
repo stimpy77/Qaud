@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -73,12 +74,12 @@ namespace Qaud.MemoryTable
             get { return _dictionary.Select(i=>i.Value).AsQueryable(); }
         }
 
-        public T FindMatch(T lookup)
+        public T Get(T lookup)
         {
-            return Find(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
+            return Get(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
         }
 
-        public T Find(params object[] keyvalue)
+        public T Get(params object[] keyvalue)
         {
             var key = string.Join(KeyJoinDelimeter, keyvalue.Select(k => k.ToString()).ToArray());
             if (_dictionary.ContainsKey(key)) return _dictionary[key];
@@ -87,7 +88,7 @@ namespace Qaud.MemoryTable
 
         public void Update(T item)
         {
-            var matchingItem = FindMatch(item);
+            var matchingItem = Get(item);
             _memberResolver.HydrateFromDictionary(matchingItem, _memberResolver.ConvertToDictionary(item));
         }
 
@@ -102,7 +103,7 @@ namespace Qaud.MemoryTable
         public T UpdatePartial(object item)
         {
             var keys = _memberResolver.GetKeyPropertyValues(item).ToArray();
-            var current = Find(keys);
+            var current = Get(keys);
             _memberResolver.ApplyPartial(current, item);
             Update(current);
             return current;
@@ -110,19 +111,19 @@ namespace Qaud.MemoryTable
 
         public void DeleteItem(T item)
         {
-            var matchingItem = FindMatch(item);
+            var matchingItem = Get(item);
             _dictionary.Remove(GetItemKey(matchingItem));
         }
 
         public void Delete(params object[] keyvalue)
         {
-            var matchingItem = Find(keyvalue);
+            var matchingItem = Get(keyvalue);
             _dictionary.Remove(GetItemKey(matchingItem));
         }
 
         public void DeleteRange(IEnumerable<T> items)
         {
-            var matchingItems = items.Select(FindMatch);
+            var matchingItems = items.Select(Get);
             foreach (var item in matchingItems)
             {
                 _dictionary.Remove(GetItemKey(item));
@@ -210,19 +211,34 @@ namespace Qaud.MemoryTable
             return _dictionary.Remove(GetItemKey(item));
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
-        }
-
         void ICollection<T>.Add(T item)
         {
             Add(item);
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return _dictionary.Select(items=>items.Value).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return Query.ElementType; }
+        }
+
+        System.Linq.Expressions.Expression IQueryable.Expression
+        {
+            get { return Query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return Query.Provider; }
         }
 
         void IDictionary<string, T>.Add(string key, T value)

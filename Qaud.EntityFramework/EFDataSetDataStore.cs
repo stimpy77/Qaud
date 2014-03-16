@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -113,14 +114,14 @@ namespace Qaud.EntityFramework
             if (AutoSave) SaveChanges();
         }
 
-        public virtual T FindMatch(T lookup)
+        public virtual T Get(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers;
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
-            return Find(_memberResolver.GetKeyPropertyValues(lookup));
+            return Get(_memberResolver.GetKeyPropertyValues(lookup));
         }
 
-        public virtual T Find(params object[] keyvalue)
+        public virtual T Get(params object[] keyvalue)
         {
             return _dbSet.Find(keyvalue);
         }
@@ -128,7 +129,7 @@ namespace Qaud.EntityFramework
         /// <summary>
         ///     Returns the underlying DbSet as an <see cref="IQueryable{T}" />
         /// </summary>
-        public virtual IQueryable<T> Query
+        protected virtual IQueryable<T> Query
         {
             get { return _dbSet; }
         }
@@ -165,7 +166,7 @@ namespace Qaud.EntityFramework
             }
             else
             {
-                T actual = FindMatch(item);
+                T actual = Get(item);
                 _memberResolver.ApplyChanges(actual, item);
             }
             if (AutoSave) SaveChanges();
@@ -183,7 +184,7 @@ namespace Qaud.EntityFramework
 
         public virtual void Delete(params object[] keyvalue)
         {
-            DeleteItem(Find(keyvalue));
+            DeleteItem(Get(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
@@ -203,6 +204,31 @@ namespace Qaud.EntityFramework
         {
             get { return _autoSave; }
             set { _autoSave = value; }
+        }
+
+        public virtual IEnumerator<T> GetEnumerator()
+        {
+            return this.Query.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        Type IQueryable.ElementType
+        {
+            get { return Query.ElementType; }
+        }
+
+        System.Linq.Expressions.Expression IQueryable.Expression
+        {
+            get { return Query.Expression; }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return Query.Provider; }
         }
 
         public virtual void SaveChanges()

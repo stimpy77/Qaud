@@ -37,7 +37,7 @@ namespace Qaud.MemoryTable.Test
         protected override FooModel GetItemById(long id)
         {
             // cheating; should return deserialized from this.DataTable
-            return base.DataStore.Query.SingleOrDefault(item => item.ID == id);
+            return base.DataStore.SingleOrDefault(item => item.ID == id);
         }
 
         [TestMethod]

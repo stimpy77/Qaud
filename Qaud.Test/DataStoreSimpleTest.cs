@@ -87,7 +87,7 @@ namespace Qaud.Test
             SaveChanges();
 
             // Act
-            var result = _dataStore.Query.SingleOrDefault(it => it.ID == item.ID);
+            var result = _dataStore.SingleOrDefault(it => it.ID == item.ID);
 
             // Assert
             Assert.IsNotNull(result);
@@ -130,7 +130,7 @@ namespace Qaud.Test
             SaveChanges();
 
             // Act
-            var result = _dataStore.Query.OrderBy(item=>item.ID).ToList();
+            var result = _dataStore.OrderBy(item=>item.ID).ToList();
 
             // Assert
             Assert.IsNotNull(result);
@@ -248,7 +248,7 @@ namespace Qaud.Test
             try
             {
                 result = GetItemById(item.ID);
-                queryresult = _dataStore.Query.SingleOrDefault(v => v.ID == item.ID);
+                queryresult = _dataStore.SingleOrDefault(v => v.ID == item.ID);
             }
             catch { }
 
@@ -273,7 +273,7 @@ namespace Qaud.Test
             try
             {
                 result = GetItemById(item.ID);
-                queryresult = _dataStore.Query.SingleOrDefault(v => v.ID == item.ID);
+                queryresult = _dataStore.SingleOrDefault(v => v.ID == item.ID);
             }
             catch { }
 
@@ -297,7 +297,7 @@ namespace Qaud.Test
             try
             {
                 result = GetItemById(item.ID);
-                queryresult = _dataStore.Query.SingleOrDefault(v => v.ID == item.ID);
+                queryresult = _dataStore.SingleOrDefault(v => v.ID == item.ID);
             }
             catch { }
 

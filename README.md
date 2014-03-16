@@ -41,7 +41,8 @@ The base interface is `ICrud<T>`; the following summarizes it:
 
         public interface ICrud<T> : ICreate<T>, 
                                     IAddItem<T>, 
-                                    IFind<T>, 
+                                    IQueryable<T>,
+                                    IGet<T>, 
                                     IUpdate<T>, 
                                     IDelete
         {
@@ -49,7 +50,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
 
             T     Create ();
             void  Add    (T item);
-            T     Find   (params object[] key);
+            T     Get    (params object[] key);
             void  Update (T item);
             void  Delete (params object[] key);
         */
@@ -61,7 +62,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
 
 The complete interface for a repository is `IDataStore<T>`; the following summarizes it:
 
-        public interface IDataStore<T> : ICrudEx<T>, IHasQueryable<T>
+        public interface IDataStore<T> : ICrudEx<T>
         {
 
         /*  ICrudEx<T> includes these:
@@ -78,14 +79,6 @@ The complete interface for a repository is `IDataStore<T>`; the following summar
             void Delete(params object[] keyvalue);
             void DeleteItem(T item);
             void DeleteRange(IEnumerable<T> items);
-
-        */
-
-        /*  IHasQueryable<T> includes this:
-
-            IQueryable<T> Query { get; }
-        */
-            
 
             // if false, defers changes; false not always supported, see CanQueueChanges
             bool AutoSave { get; set; }

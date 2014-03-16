@@ -42,7 +42,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
         public interface ICrud<T> : ICreate<T>, 
                                     IAddItem<T>, 
                                     IQueryable<T>,
-                                    IGet<T>, 
+                                    IFind<T>, 
                                     IUpdate<T>, 
                                     IDelete
         {
@@ -50,7 +50,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
 
             T     Create ();
             void  Add    (T item);
-            T     Get    (params object[] key);
+            T     Find   (params object[] key);
             void  Update (T item);
             void  Delete (params object[] key);
         */

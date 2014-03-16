@@ -30,6 +30,13 @@ namespace Qaud.Test
             result.AutoPopulate();
         }
 
+        private string GetLocalDateString(DateTime dt)
+        {
+            return dt.Kind == DateTimeKind.Utc
+                ? dt.ToLocalTime().ToString()
+                : dt.ToString();
+        }
+
         protected virtual void DataStore_Add_Item_Adds_Item()
         {
             // Arrange
@@ -45,7 +52,10 @@ namespace Qaud.Test
             Assert.IsNotNull(result);
             Assert.AreEqual(item.ID, result.ID);
             Assert.AreEqual(item.Title, result.Title);
-            Assert.AreEqual(item.CreateDate, result.CreateDate);
+            Assert.AreEqual(item.CreateDate.ToString(), 
+                result.CreateDate.Kind == DateTimeKind.Utc 
+                    ? result.CreateDate.ToLocalTime().ToString()
+                    : result.CreateDate.ToString());
             Assert.AreEqual(item.Content, result.Content);
             if (_dataStore.SupportsComplexStructures)
             {
@@ -83,7 +93,7 @@ namespace Qaud.Test
             Assert.IsNotNull(result);
             Assert.AreEqual(item.ID, result.ID);
             Assert.AreEqual(item.Title, result.Title);
-            Assert.AreEqual(item.CreateDate, result.CreateDate);
+            Assert.AreEqual(GetLocalDateString(item.CreateDate), GetLocalDateString(result.CreateDate));
             Assert.AreEqual(item.Content, result.Content);
             if (_dataStore.SupportsComplexStructures)
             {
@@ -130,7 +140,7 @@ namespace Qaud.Test
                 Assert.IsNotNull(result[i]);
                 Assert.AreEqual(result[i].ID, items[i].ID);
                 Assert.AreEqual(result[i].Title, items[i].Title);
-                Assert.AreEqual(result[i].CreateDate, items[i].CreateDate);
+                Assert.AreEqual(GetLocalDateString(result[i].CreateDate), GetLocalDateString(items[i].CreateDate));
                 Assert.AreEqual(result[i].Content, items[i].Content);
                 if (_dataStore.SupportsComplexStructures)
                 {
@@ -202,7 +212,7 @@ namespace Qaud.Test
             Assert.AreEqual(modified.Content, result.Content);
             // all else is the same ..
             Assert.AreEqual(item.Title, result.Title);
-            Assert.AreEqual(item.CreateDate, result.CreateDate);
+            Assert.AreEqual(GetLocalDateString(item.CreateDate), GetLocalDateString(result.CreateDate));
             if (_dataStore.SupportsComplexStructures)
             {
                 Assert.IsNotNull(result.Comments);

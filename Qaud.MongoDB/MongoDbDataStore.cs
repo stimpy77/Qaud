@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
+using MongoDB.Driver.Wrappers;
 
 namespace Qaud.MongoDB
 {
@@ -14,6 +18,8 @@ namespace Qaud.MongoDB
     {
         private MongoDatabase _db;
         private MongoCollection<T> _collection;
+        private EntityMemberResolver<T> _memberResolver;
+        private bool autoGenKey;
 
         public MongoDbDataStore(MongoDatabase db)
             : this(db, ResolveCollectionName(typeof(T)))
@@ -24,66 +30,199 @@ namespace Qaud.MongoDB
         {
             _db = db;
             _collection = db.GetCollection<T>(collectionName);
+            _memberResolver = new EntityMemberResolver<T>();
+            if (this.AutoConfig && !BsonClassMap.IsClassMapRegistered(typeof(T)))
+            {
+                BsonClassMap.RegisterClassMap<T>(cm =>
+                {
+                    cm.AutoMap();
+                    var idKeys = _memberResolver.KeyPropertyMembers.ToArray();
+                    var idkey = idKeys.SingleOrDefault();
+                    if (idkey == null)
+                    {
+                        if (idKeys.Length > 0)
+                        {
+                            throw new InvalidOperationException(
+                                "The MongoDb implementation of IDataStore<T> does not support multiple key members.");
+                        }
+                        throw new InvalidOperationException(
+                            string.Format(
+                                "System.ComponentModel.DataAnnotations.KeyAttribute must be associated with at least one member on {0} (even if BsonId is already used).",
+                                typeof (T).Name));
+                    }
+                    cm.SetIdMember(cm.GetMemberMap(idkey.Name));
+                    if (_memberResolver.IsAutoIdentity(idkey.Name))
+                    {
+                        if (idkey.PropertyType == typeof (string))
+                        {
+                            cm.IdMemberMap.SetIdGenerator(global::MongoDB.Bson.Serialization.IdGenerators.StringObjectIdGenerator.Instance);
+                            autoGenKey = true;
+                        }
+                        if (idkey.PropertyType == typeof (Guid))
+                        {
+                            cm.IdMemberMap.SetIdGenerator(global::MongoDB.Bson.Serialization.IdGenerators.GuidGenerator.Instance);
+                            autoGenKey = true;
+                        }
+                        if (idkey.PropertyType == typeof (ObjectId))
+                        {
+                            cm.IdMemberMap.SetIdGenerator(global::MongoDB.Bson.Serialization.IdGenerators.ObjectIdGenerator.Instance);
+                            autoGenKey = true;
+                        }
+                        if (!autoGenKey)
+                        {
+                            throw new NotImplementedException("Auto generated key for type " + idkey.Name + " not yet supported.");
+                        }
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this implementation should resolve key-related configuration
+        /// details and apply them to the database mappings. Override and return false
+        /// if your model (<typeparamref name="T"/>) is preconfigured with Bson-related
+        /// attributes or you have applied a BsonClasMap.
+        /// </summary>
+        protected virtual bool AutoConfig
+        {
+            get
+            {
+                return true;
+            }
         }
 
         public T Create()
         {
-            throw new NotImplementedException();
+            return Activator.CreateInstance<T>();
         }
 
-        public void Add(T item)
+        private void AutoSaveIfAutoSaveEnabled()
         {
-            throw new NotImplementedException();
+            if (((IDataStore<T>)this).AutoSave)
+            {
+                ((IDataStore<T>)this).SaveChanges();
+            }
         }
 
-        public T Find(params object[] key)
+        public virtual void Add(T item)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Update(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete(params object[] key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T FindMatch(T lookup)
-        {
-            throw new NotImplementedException();
+            _collection.Insert(item);
+            AutoSaveIfAutoSaveEnabled();
         }
 
         public void Add(T item, out T result)
         {
-            throw new NotImplementedException();
+            var writeresult = _collection.Insert(item);
+            AutoSaveIfAutoSaveEnabled();
+            result = item;
+            if (((IDataStore<T>)this).SupportsGeneratedKeys && autoGenKey)
+            {
+                var idval = writeresult.Upserted;
+                var idKeys = _memberResolver.KeyPropertyMembers.ToArray();
+                var idkey = idKeys.SingleOrDefault();
+                var idvalnatv = BsonSerializer.Deserialize(idval.ToBsonDocument(), idkey.PropertyType);
+                idkey.SetValue(result, idvalnatv);
+            }
         }
 
-        public void AddRange(IEnumerable<T> items)
+        private string GetElementName<T>(string memberName)
         {
-            throw new NotImplementedException();
+            return
+                BsonClassMap.GetRegisteredClassMaps().First(cm => cm.ClassType == typeof(T))
+                    .GetMemberMap(memberName).ElementName;
         }
 
-        public void UpdateRange(IEnumerable<T> items)
+        private IMongoQuery CreateQueryByKey(params object[] key)
         {
-            throw new NotImplementedException();
+            var keyProps = _memberResolver.KeyPropertyMembers.ToArray();
+            if (keyProps.Length != key.Length)
+            {
+                throw new ArgumentException("Key field count mismatch", "key");
+            }
+            var dic = new Dictionary<string, object>();
+            for (var i = 0; i < keyProps.Length; i++)
+            {
+                var id = keyProps[i].Name;
+                dic[id] = key[i];
+            }
+            var query = global::MongoDB.Driver.Builders.Query.And(
+                dic.Select(kvp => global::MongoDB.Driver.Builders.Query.EQ(
+                    GetElementName<T>(kvp.Key), BsonValue.Create(kvp.Value))));
+            return query;
         }
 
-        public T UpdatePartial(object item)
+        public virtual T Find(params object[] key)
         {
-            throw new NotImplementedException();
+            var query = CreateQueryByKey(key);
+            return _collection.FindOne(query);
+        }
+
+        public void Update(T item)
+        {
+            var orig = FindMatch(item);
+            _memberResolver.ApplyChanges(orig, item);
+            _collection.Save(orig);
+            AutoSaveIfAutoSaveEnabled();
+        }
+
+        public void Delete(params object[] key)
+        {
+            var query = CreateQueryByKey(key);
+            var result = _collection.Remove(query);
+            if (result.DocumentsAffected == 0)
+            {
+                throw new KeyNotFoundException("Could not find item to delete.");
+            }
+            AutoSaveIfAutoSaveEnabled();
         }
 
         public void DeleteItem(T item)
         {
-            throw new NotImplementedException();
+            var query = CreateQueryByKey(_memberResolver.GetKeyPropertyValues(item).ToArray());
+            var result = _collection.Remove(query);
+            if (result.DocumentsAffected == 0)
+            {
+                throw new KeyNotFoundException("Could not find item to delete.");
+            }
+            AutoSaveIfAutoSaveEnabled();
         }
 
         public void DeleteRange(IEnumerable<T> items)
         {
-            throw new NotImplementedException();
+            foreach (var item in items)
+            {
+                DeleteItem(item);
+            }
+            AutoSaveIfAutoSaveEnabled();
+        }
+
+        public T FindMatch(T lookup)
+        {
+            var query = CreateQueryByKey(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
+            return _collection.FindOne(query);
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            foreach (var item in items) Add(item);
+            AutoSaveIfAutoSaveEnabled();
+        }
+
+        public void UpdateRange(IEnumerable<T> items)
+        {
+            foreach (var item in items) Update(item);
+            AutoSaveIfAutoSaveEnabled();
+        }
+
+        public T UpdatePartial(object item)
+        {
+            var query = CreateQueryByKey(_memberResolver.GetKeyPropertyValues(item).ToArray());
+            var orig = _collection.FindOne(query);
+            var changed = orig;
+            _memberResolver.ApplyPartial(changed, item);
+            _collection.Save(orig);
+            AutoSaveIfAutoSaveEnabled();
+            return changed;
         }
 
         public IQueryable<T> Query
@@ -93,44 +232,38 @@ namespace Qaud.MongoDB
 
         bool IDataStore<T>.AutoSave
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get { return true; }
+            set { throw new NotImplementedException(); }
         }
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         bool IDataStore<T>.CanQueueChanges
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         bool IDataStore<T>.SupportsNestedRelationships
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         bool IDataStore<T>.SupportsComplexStructures
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         bool IDataStore<T>.SupportsTransactionScope
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         bool IDataStore<T>.SupportsGeneratedKeys
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         object IDataStore<T>.DataSet

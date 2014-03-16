@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Qaud.Test;
 
@@ -8,29 +11,59 @@ namespace Qaud.MongoDB.Test
     [TestClass]
     public class MongoDataStoreSimpleTest : DataStoreSimpleTest
     {
-        public MongoDataStoreSimpleTest() : base(CreateMongoDataStore())
+        private static MongoClient client;
+        private static MongoServer server;
+        private static MongoDatabase db;
+
+        public MongoDataStoreSimpleTest() : base(CreateDataStore())
         {
+            
         }
 
-        private static MongoDbDataStore<FooModel> CreateMongoDataStore()
+        internal static MongoDbDataStore<FooModel> CreateDataStore()
         {
-            throw new NotImplementedException();
+            client = new MongoClient();
+            server = client.GetServer();
+            server.Connect();
+            db = server.GetDatabase("qaudtest");
+            db.DropCollection("fooModel");
+            var dataStore = new MongoDbDataStore<FooModel>(db);
+            return dataStore;
         }
 
-
+        
         protected override void AddItemToStore(FooModel item)
         {
-            throw new NotImplementedException();
+            var collection = (MongoCollection<FooModel>) ((IDataStore<FooModel>) DataStore).DataSet;
+            collection.Insert(item);
         }
 
         protected override void CleanOutItemFromStore(FooModel item)
         {
-            throw new NotImplementedException();
+            var collection = (MongoCollection<FooModel>)((IDataStore<FooModel>)DataStore).DataSet;
+            var query = global::MongoDB.Driver.Builders.Query.EQ(
+                GetElementName<FooModel>("ID"), new BsonInt64(item.ID));
+            collection.Remove(query);
         }
 
         protected override FooModel GetItemById(long id)
         {
-            throw new NotImplementedException();
+            var collection = (MongoCollection<FooModel>)((IDataStore<FooModel>)DataStore).DataSet;
+            var query = global::MongoDB.Driver.Builders.Query.EQ(
+                GetElementName<FooModel>("ID"), new BsonInt64(id));
+            return collection.Find(query).FirstOrDefault();
+        }
+
+        private string GetElementName<T>(string memberName)
+        {
+            return
+                BsonClassMap.GetRegisteredClassMaps().First(cm => cm.ClassType == typeof (T))
+                    .GetMemberMap(memberName).ElementName;
+        }
+
+        private new MongoDbDataStore<FooModel> DataStore
+        {
+            get { return (MongoDbDataStore<FooModel>)base.DataStore; }
         }
 
         [TestMethod]

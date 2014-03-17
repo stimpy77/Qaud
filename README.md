@@ -106,7 +106,7 @@ Frustrations have arisen where it has been observed that IQueryable seems to be 
 practically all data access libraries and tools, which makes it very easy to read from a vast multitude 
 of data sources without being concerned about the driver or provider of the data source, but no effort 
 has been made to consolidate the other data access operations of adding, updating, and deleting data. 
-This is what drove the initial creation of this library.
+This is what drove the initial creation of this project.
 
 ### Not Another O/RM (but then again ...)
 

@@ -149,9 +149,10 @@ and implementations of these operations vary wildly between O/RMs and database p
 If one is willing to choose to use simpler conventions of data access and write all data access code through
 generic interfaces such that **all data is stored either in tables or in a "document", and all entities have 
 a key**, one can jump from any data provider to another without modifying any code except for initial setup 
-such as in dependency injection initializers. 
+such as in dependency injection initializers. This is the ideal, unfortunately it is not achievable. The
+goal of QAUD is to get us a number of steps towards it. 
 
-This versatility comes at a few costs, starting with price of relationship awareness. It would be 
+In QAUD's case, versatility comes at a few costs, starting with price of relationship awareness. It would be 
 entirely dependent upon the data provider or O/RM to break down related entities into their relationships. 
 Fortunately, when using a relational-aware O/RM with QAUD, the expected behavior as with "navigation 
 properties" can still work as before, the developer will just need to be aware of his limitations when 

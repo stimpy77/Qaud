@@ -117,9 +117,9 @@ This is all great, but there are a couple issues here. First, what if I want to 
 Entity Framework? Or what if I begin targeting SQL Server on Windows and get comfortable with using 
 Entity Framework, but then decide to instead target MongoDB or Cassandra? 
 
-If I am willing to choose to use simpler conventions of data access such that **all data is stored either
+If one is willing to choose to use simpler conventions of data access such that **all data is stored either
 in a table or in a "document", all data has a key, and programmatic relationships as with "navigation 
-properties" are not high on my priority list**, I can jump from any data provider to another without
+properties" are not high on the priority list**, one can jump from any data provider to another without
 modifying any code except for initial setup such as in dependency injection initializers. 
 
 This versatility comes at a few costs, starting with price of relationship awareness. It would be 

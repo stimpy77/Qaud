@@ -102,11 +102,11 @@ applications that do not need to know the full measure of the technology behind 
 expectations of CRUD (Create, Read, Update, Delete) are met with a consistent interface. Most DALs start 
 with key-based table or document structures, so this solution builds upon that premise.
 
-Frustrations have arisen where it has been observed that IQueryable seems to be supported everywhere, in all
-data access libraries and tools, which makes it very easy to work with read-only data sources without being
-concerned about the driver or provider of the data source, but no effort has been made to consolidate the 
-other data access operations of adding, updating, and deleting data. This is what drove the initial creation 
-of this library.
+Frustrations have arisen where it has been observed that IQueryable seems to be supported everywhere, in 
+practically all data access libraries and tools, which makes it very easy to read from a vast multitude 
+of data sources without being concerned about the driver or provider of the data source, but no effort 
+has been made to consolidate the other data access operations of adding, updating, and deleting data. 
+This is what drove the initial creation of this library.
 
 ### Not Another O/RM (but then again ...)
 

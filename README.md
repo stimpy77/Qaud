@@ -3,7 +3,7 @@ QAUD (Query Add Update Delete) v0.2
 ##<sub><sup>(QAUD is not a word. Don't fix it.)</sup></sub>
 QAUD is an interface plus implementations for QAUD, or CRUD, operations. 
 It's ICrud, basically, intended for extending IQueryable-supporting data repositories with the promise of a 
-basic set of alteration operations.
+basic set of alteration operations. 
 
 ## Supported Implementations 
 
@@ -149,8 +149,9 @@ and implementations of these operations vary wildly between O/RMs and database p
 If one is willing to choose to use simpler conventions of data access and write all data access code through
 generic interfaces such that **all data is stored either in tables or in a "document", and all entities have 
 a key**, one can jump from any data provider to another without modifying any code except for initial setup 
-such as in dependency injection initializers. This is the ideal, unfortunately it is not achievable. The
-goal of QAUD is to get us a number of steps towards it. 
+such as in dependency injection initializers. This is the ideal; unfortunately, in typical scenarios this
+ideal it simplistic and not achievable in larger applications. The goal of QAUD is to get us a number of 
+steps towards it, or to achieve it entirely in trivial prototype solutions. 
 
 In QAUD's case, versatility comes at a few costs, starting with price of relationship awareness. It would be 
 entirely dependent upon the data provider or O/RM to break down related entities into their relationships. 

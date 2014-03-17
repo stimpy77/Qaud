@@ -82,7 +82,7 @@ namespace Qaud.MongoDB
         /// Gets whether this implementation should resolve key-related configuration
         /// details and apply them to the database mappings. Override and return false
         /// if your model (<typeparamref name="T"/>) is preconfigured with Bson-related
-        /// attributes or you have applied a BsonClasMap.
+        /// attributes or you have applied a BsonClassMap.
         /// </summary>
         protected virtual bool AutoConfig
         {

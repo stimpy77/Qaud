@@ -124,8 +124,8 @@ quickly without much coding effort, but the reality is that we must also add, up
 and implementations of these operations vary wildly between O/RMs and database providers.
 
 If one is willing to choose to use simpler conventions of data access and write all data access code through
-generic interfaces such that **all data is stored either in tables or in a "document", all entities have a 
-key**, one can jump from any data provider to another without modifying any code except for initial setup 
+generic interfaces such that **all data is stored either in tables or in a "document", and all entities have 
+a key**, one can jump from any data provider to another without modifying any code except for initial setup 
 such as in dependency injection initializers. 
 
 This versatility comes at a few costs, starting with price of relationship awareness. It would be 

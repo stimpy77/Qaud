@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.MongoDB", "Qaud.MongoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.MongoDB.Test", "Qaud.MongoDB.Test\Qaud.MongoDB.Test.csproj", "{AC2D818F-59F4-42A3-8E61-02F43268F98D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.DbProvider", "Qaud.DbProvider\Qaud.DbProvider.csproj", "{82AE903A-0D92-4AE5-9A91-B4DAB5533AC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qaud.DbProvider.Test", "Qaud.DbProvider.Test\Qaud.DbProvider.Test.csproj", "{D5F90CB4-99FB-4556-AB29-920E46AAC595}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +80,14 @@ Global
 		{AC2D818F-59F4-42A3-8E61-02F43268F98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC2D818F-59F4-42A3-8E61-02F43268F98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC2D818F-59F4-42A3-8E61-02F43268F98D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82AE903A-0D92-4AE5-9A91-B4DAB5533AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82AE903A-0D92-4AE5-9A91-B4DAB5533AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82AE903A-0D92-4AE5-9A91-B4DAB5533AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82AE903A-0D92-4AE5-9A91-B4DAB5533AC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F90CB4-99FB-4556-AB29-920E46AAC595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F90CB4-99FB-4556-AB29-920E46AAC595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F90CB4-99FB-4556-AB29-920E46AAC595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F90CB4-99FB-4556-AB29-920E46AAC595}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +98,6 @@ Global
 		{3D32219B-574E-4962-B72D-41519869E3AA} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
 		{86FF6990-E6A6-49B4-8132-13374CABDE8A} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
 		{AC2D818F-59F4-42A3-8E61-02F43268F98D} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
+		{D5F90CB4-99FB-4556-AB29-920E46AAC595} = {73A3A003-48DD-4A4A-89E7-4097F8F10B53}
 	EndGlobalSection
 EndGlobal

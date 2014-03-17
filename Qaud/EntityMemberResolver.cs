@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 
@@ -55,8 +57,19 @@ namespace Qaud
         /// <returns></returns>
         public Dictionary<string, object> ConvertToDictionary(object item)
         {
-            return item.GetType().GetProperties().ToDictionary(property
-                => property.Name, property => property.GetValue(item, new object[] {}));
+            var datarow = item as DbDataReader;
+            
+            if (datarow == null)
+                return item.GetType().GetProperties().ToDictionary(property
+                    => property.Name, property => property.GetValue(item, new object[] {}));
+
+            var dictionary = new Dictionary<string, object>();
+            var columns = datarow.GetSchemaTable().Columns;
+            foreach (DataColumn column in columns)
+            {
+                dictionary[column.ColumnName] = datarow[column.ColumnName];
+            }
+            return dictionary;
         }
 
         /// <summary>

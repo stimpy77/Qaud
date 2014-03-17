@@ -132,8 +132,9 @@ switching implementations to something relationally unaware, such as Cassandra.
 
 To the extent that the objective of this project is to just serialize a chunk of data with as minimum coding 
 effort as possible, QAUD implementations fit the same objectives of convenience and interface 
-consistency as O/RMs. However, to the extent that O/RMs also make efforts to support relationships 
-between entitites, etc., QAUD does not qualify as an O/RM.
+consistency as O/RMs, **by relying upon them and consolidating the interfaces between them to only one**. 
+However, to the extent that O/RMs also make efforts to support relationships between entitites, etc., QAUD 
+does not qualify as an O/RM.
 
 ### Scenarios
 

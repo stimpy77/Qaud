@@ -39,12 +39,12 @@ Another situation is where an application that builds entirely upon `IDataStore<
 
 The base interface is `ICrud<T>`; the following summarizes it:
 
-        public interface ICrud<T> : ICreate<T>, 
-                                    IAddItem<T>, 
-                                    IQueryable<T>,
-                                    IFind<T>, 
-                                    IUpdate<T>, 
-                                    IDelete
+        public interface ICrud<T> : ICreate<T>,    /* Create --
+                                    IAddItem<T>,    ----------- */
+                                    IQueryable<T>, /* Read --
+                                    IFind<T>,       ----------- */
+                                    IUpdate<T>,    /* Update -- */
+                                    IDelete        /* Delete -- */
         {
         /* implemented by above declaration:
 

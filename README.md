@@ -59,6 +59,8 @@ The complete interface for a repository is `IDataStore<T>`; the following summar
             void DeleteItem(T item);
             void DeleteRange(IEnumerable<T> items);
 
+         */
+
             // if false, defers changes; false not always supported, see CanQueueChanges
             bool AutoSave { get; set; }
 

@@ -95,10 +95,12 @@ explicitly, to conveniently hide from consumer code (i.e. from intellisense).
 
 ## Background
 
-The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not 
-need to know the full measure of the technology behind the DAL, as long as core expectations of CRUD 
-(Create, Read, Update, Delete) are met with a consistent interface. Most DALs start with key-based table or 
-document structures, so this solution builds upon that premise.
+The objective behind QAUD is have a **single interface definition for basic database / "document" storage 
+access across disparate technology implementations**, extending IQueryable for *read* with interfaces for 
+*add*, *update*, and *delete* operations. QAUD facilitates a DAL (Data Access Layer) into prototype 
+applications that do not need to know the full measure of the technology behind the DAL, as long as core 
+expectations of CRUD (Create, Read, Update, Delete) are met with a consistent interface. Most DALs start 
+with key-based table or document structures, so this solution builds upon that premise.
 
 Frustrations have arisen where it has been observed that IQueryable seems to be supported everywhere, in all
 data access libraries and tools, which makes it very easy to work with read-only data sources without being

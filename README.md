@@ -117,14 +117,16 @@ effort as feasibly possible. The "holy grails" first appeared for .NET in NHiber
 of Hibernate, followed by LINQ-to-SQL, followed by Entity Framework "Magical Unicorn Edition" (which 
 supports the Code First programming model).
 
-This is all great, but there are a couple issues here. First, what if I want to switch from NHibernate to 
-Entity Framework? Or what if I begin targeting SQL Server on Windows and get comfortable with using 
-Entity Framework, but then decide to instead target MongoDB or Cassandra? 
+But what if one wants to switch from NHibernate to Entity Framework? Or what if one begins targeting SQL Server 
+on Windows and get comfortable with using Entity Framework, but then decides to instead target MongoDB or 
+Cassandra? If we could use IQueryable (LINQ) everywhere, we could get away with making these changes very 
+quickly without much coding effort, but the reality is that we must also add, update, and delete data, 
+and implementations of these operations vary wildly between O/RMs and database providers.
 
-If one is willing to choose to use simpler conventions of data access such that **all data is stored either
-in a table or in a "document", all data has a key, and programmatic relationships as with "navigation 
-properties" are not high on the priority list**, one can jump from any data provider to another without
-modifying any code except for initial setup such as in dependency injection initializers. 
+If one is willing to choose to use simpler conventions of data access and write all data access code through
+generic interfaces such that **all data is stored either in tables or in a "document", all entities have a 
+key**, one can jump from any data provider to another without modifying any code except for initial setup 
+such as in dependency injection initializers. 
 
 This versatility comes at a few costs, starting with price of relationship awareness. It would be 
 entirely dependent upon the data provider or O/RM to break down related entities into their relationships. 
@@ -132,11 +134,12 @@ Fortunately, when using a relational-aware O/RM with QAUD, the expected behavior
 properties" can still work as before, the developer will just need to be aware of his limitations when 
 switching implementations to something relationally unaware, such as Cassandra.
 
-To the extent that the objective of this project is to just serialize a chunk of data with as minimum coding 
-effort as possible, QAUD implementations fit the same objectives of convenience and interface 
-consistency as O/RMs, **by relying upon them and consolidating the interfaces between them to only one**. 
-However, to the extent that O/RMs also make efforts to support relationships between entitites, etc., QAUD 
-does not qualify as an O/RM.
+To the extent that the objective of this project is to support entity persistence with as minimum coding 
+effort as possible using a common and consistent interface of CRUD operations, QAUD implementations fit 
+the same objectives of convenience and interface consistency as O/RMs, **by relying upon them and 
+consolidating the CRUD operation interfaces between them to only one**. However, to the extent that O/RMs 
+also make efforts to support relationships between entitites, as well as offer other highly productive, 
+performance, and/or otherwise beneficial features, QAUD does not qualify as an O/RM.
 
 ### Scenarios
 

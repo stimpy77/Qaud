@@ -106,7 +106,7 @@ namespace Qaud.MemoryTable
             get { return Query.Provider; }
         }
 
-        public virtual T Find(T lookup)
+        public virtual T Get(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
@@ -115,7 +115,7 @@ namespace Qaud.MemoryTable
             return Hydrate(rows.Single());
         }
 
-        public virtual T Find(params object[] keyvalue)
+        public virtual T Get(params object[] keyvalue)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
@@ -125,7 +125,7 @@ namespace Qaud.MemoryTable
             {
                 prop.SetValue(obj, keyvalue[i++]);
             }
-            return Find(obj);
+            return Get(obj);
         }
 
         public virtual void Update(T item)
@@ -166,7 +166,7 @@ namespace Qaud.MemoryTable
 
         public virtual void Delete(params object[] keyvalue)
         {
-            DeleteItem(Find(keyvalue));
+            DeleteItem(Get(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)

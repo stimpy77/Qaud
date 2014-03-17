@@ -152,7 +152,7 @@ namespace Qaud.MongoDB
             return query;
         }
 
-        public virtual T Find(params object[] key)
+        public virtual T Get(params object[] key)
         {
             var query = CreateQueryByKey(key);
             return _collection.FindOne(query);
@@ -160,7 +160,7 @@ namespace Qaud.MongoDB
 
         public void Update(T item)
         {
-            var orig = Find(item);
+            var orig = Get(item);
             _memberResolver.ApplyChanges(orig, item);
             _collection.Save(orig);
             AutoSaveIfAutoSaveEnabled();
@@ -197,7 +197,7 @@ namespace Qaud.MongoDB
             AutoSaveIfAutoSaveEnabled();
         }
 
-        public T Find(T lookup)
+        public T Get(T lookup)
         {
             var query = CreateQueryByKey(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
             return _collection.FindOne(query);

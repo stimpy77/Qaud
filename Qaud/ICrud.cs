@@ -10,35 +10,35 @@ namespace Qaud
     /// A CRUD interface with support for an extended set of more versatile variations of CRUD operations. 
     /// </summary>
     /// <seealso cref="ICrud{T}"/>
-    /// <seealso cref="IFindEx{T}"/>
+    /// <seealso cref="IGetEx{T}"/>
     /// <seealso cref="IAddItemEx{T}"/>
     /// <seealso cref="IUpdateEx{T}"/>
     /// <seealso cref="IDeleteEx{T}"/>
     /// <seealso cref="ICreate{T}"/>
     /// <seealso cref="IAddItem{T}"/>
-    /// <seealso cref="IFind{T}"/>
+    /// <seealso cref="IGet{T}"/>
     /// <seealso cref="IUpdate{T}"/>
     /// <seealso cref="IDelete"/>
     /// <typeparam name="T"></typeparam>
-    public interface ICrudEx<T> : ICrud<T>, IFindEx<T>, IAddItemEx<T>, IUpdateEx<T>, IDeleteEx<T>
+    public interface ICrudEx<T> : ICrud<T>, IGetEx<T>, IAddItemEx<T>, IUpdateEx<T>, IDeleteEx<T>
     {
     }
 
     /// <summary>
-    /// A data repository that supports Create (and Add), read (Find), Update, and Delete. 
+    /// A data repository that supports Create (and Add), read (Get), Update, and Delete. 
     /// </summary>
     /// <seealso cref="ICreate{T}"/>
     /// <seealso cref="IAddItem{T}"/>
-    /// <seealso cref="IFind{T}"/>
+    /// <seealso cref="IGet{T}"/>
     /// <seealso cref="IUpdate{T}"/>
     /// <seealso cref="IDelete"/>
     /// <typeparam name="T"></typeparam>
-    public interface ICrud<T> : ICreate<T>, IAddItem<T>, IFind<T>, IUpdate<T>, IDelete, IQueryable<T>
+    public interface ICrud<T> : ICreate<T>, IAddItem<T>, IGet<T>, IUpdate<T>, IDelete, IQueryable<T>
     {
     }
 
     /// <summary>
-    /// An extended data repository that supports Create (and Add), read (Find), Update, and Delete, 
+    /// An extended data repository that supports Create (and Add), read (Get), Update, and Delete, 
     /// plus additional interfaces to add versatility to these operations.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -96,12 +96,12 @@ namespace Qaud
     }
 
     /// <summary>
-    /// Indicates that the implementation is a container or search interface that can <see cref="Find"/> an item
+    /// Indicates that the implementation is a container or search interface that can <see cref="Get"/> an item
     /// given a key. The key can be a composite key of multiple values; if the implementation does not support
     /// composite keys, it may combine the key values into a single value.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IFind<T>
+    public interface IGet<T>
     {
         /// <summary>
         /// When implemented, performs a lookup based on the given item's key column(s). If the item is found as 
@@ -109,17 +109,17 @@ namespace Qaud
         /// </summary>
         /// <param name="key">The key column value(s) to perform the lookup.</param>
         /// <returns>A matching entity, or null.</returns>
-        T Find(params object[] key);
+        T Get(params object[] key);
     }
 
     /// <summary>
-    /// Indicates that the implementation is a container or search interface that can Find an item
+    /// Indicates that the implementation is a container or search interface that can Get an item
     /// given a key. The key can be pulled out of another instance of <typeparamref name="T"></typeparamref> using
-    /// <see cref="Find"/>.
+    /// <see cref="Get"/>.
     /// </summary>
-    /// <seealso cref="IFind{T}"/>
+    /// <seealso cref="IGet{T}"/>
     /// <typeparam name="T"></typeparam>
-    public interface IFindEx<T> : IFind<T>
+    public interface IGetEx<T> : IGet<T>
     {
         /// <summary>
         /// When implemented, performs a lookup based on the given item's key column(s). If the item is found as 
@@ -127,7 +127,7 @@ namespace Qaud
         /// </summary>
         /// <param name="lookup"></param>
         /// <returns>A matching entity, or null</returns>
-        T Find(T lookup);
+        T Get(T lookup);
 
     }
 

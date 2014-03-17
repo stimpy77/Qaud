@@ -84,14 +84,14 @@ namespace Qaud.RavenDB
             get { return Query.Provider; }
         }
 
-        public virtual T Find(T lookup)
+        public virtual T Get(T lookup)
         {
             var keyprops = _memberResolver.KeyPropertyMembers.ToArray();;
             if (!keyprops.Any()) throw new InvalidOperationException("Type does not have key columns: " + typeof(T).FullName);
             return GetSession().Load<T>(keyprops.Single().GetValue(lookup).ToString());
         }
 
-        public virtual T Find(params object[] keyvalue)
+        public virtual T Get(params object[] keyvalue)
         {
             var key = keyvalue.Single().ToString();
             return GetSession().Load<T>(key);
@@ -149,7 +149,7 @@ namespace Qaud.RavenDB
 
         public virtual void Delete(params object[] keyvalue)
         {
-            DeleteItem(Find(keyvalue));
+            DeleteItem(Get(keyvalue));
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)

@@ -21,7 +21,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
         public interface ICrud<T> : ICreate<T>,    /* Create --
                                     IAddItem<T>,    ----------- */
                                     IQueryable<T>, /* Read --
-                                    IFind<T>,       ----------- */
+                                    IGet<T>,        ----------- */
                                     IUpdate<T>,    /* Update -- */
                                     IDelete        /* Delete -- */
         {
@@ -29,7 +29,7 @@ The base interface is `ICrud<T>`; the following summarizes it:
 
             T     Create ();
             void  Add    (T item);
-            T     Find   (params object[] key);
+            T     Get    (params object[] key);
             void  Update (T item);
             void  Delete (params object[] key);
         */
@@ -50,8 +50,8 @@ The complete interface for a repository is `IDataStore<T>`; the following summar
             void Add(T item);
             void Add(T item, out T result);
             void AddRange(IEnumerable<T> items);
-            T FindMatch(T lookup);
-            T Find(params object[] keyvalue);
+            T Get(T lookup);
+            T Get(params object[] keyvalue);
             void Update(T item);
             void UpdateRange(IEnumerable<T> items);
             T UpdatePartial(object item);

@@ -74,12 +74,12 @@ namespace Qaud.MemoryTable
             get { return _dictionary.Select(i=>i.Value).AsQueryable(); }
         }
 
-        public T Find(T lookup)
+        public T Get(T lookup)
         {
-            return Find(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
+            return Get(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
         }
 
-        public T Find(params object[] keyvalue)
+        public T Get(params object[] keyvalue)
         {
             var key = string.Join(KeyJoinDelimeter, keyvalue.Select(k => k.ToString()).ToArray());
             if (_dictionary.ContainsKey(key)) return _dictionary[key];
@@ -88,7 +88,7 @@ namespace Qaud.MemoryTable
 
         public void Update(T item)
         {
-            var matchingItem = Find(item);
+            var matchingItem = Get(item);
             _memberResolver.HydrateFromDictionary(matchingItem, _memberResolver.ConvertToDictionary(item));
         }
 
@@ -103,7 +103,7 @@ namespace Qaud.MemoryTable
         public T UpdatePartial(object item)
         {
             var keys = _memberResolver.GetKeyPropertyValues(item).ToArray();
-            var current = Find(keys);
+            var current = Get(keys);
             _memberResolver.ApplyPartial(current, item);
             Update(current);
             return current;
@@ -111,19 +111,19 @@ namespace Qaud.MemoryTable
 
         public void DeleteItem(T item)
         {
-            var matchingItem = Find(item);
+            var matchingItem = Get(item);
             _dictionary.Remove(GetItemKey(matchingItem));
         }
 
         public void Delete(params object[] keyvalue)
         {
-            var matchingItem = Find(keyvalue);
+            var matchingItem = Get(keyvalue);
             _dictionary.Remove(GetItemKey(matchingItem));
         }
 
         public void DeleteRange(IEnumerable<T> items)
         {
-            var matchingItems = items.Select(Find);
+            var matchingItems = items.Select(Get);
             foreach (var item in matchingItems)
             {
                 _dictionary.Remove(GetItemKey(item));

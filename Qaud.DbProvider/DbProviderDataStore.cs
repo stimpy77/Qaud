@@ -99,7 +99,7 @@ namespace Qaud.DbProvider
             foreach (var item in items) Add(item);
         }
 
-        public virtual T Find(params object[] key)
+        public virtual T Get(params object[] key)
         {
             if (key == null) key = new object[] {};
             var cmdbuilder = _providerFactory.CreateCommandBuilder();
@@ -130,9 +130,9 @@ namespace Qaud.DbProvider
             }
         }
 
-        public virtual T Find(T lookup)
+        public virtual T Get(T lookup)
         {
-            return Find(_memberResolver.GetKeyPropertyValues(lookup));
+            return Get(_memberResolver.GetKeyPropertyValues(lookup));
         }
 
         public virtual void Update(T item)
@@ -161,7 +161,7 @@ namespace Qaud.DbProvider
         public virtual T UpdatePartial(object item)
         {
             var key = _memberResolver.GetKeyPropertyValues(item);
-            var orig = Find(key);
+            var orig = Get(key);
             _memberResolver.ApplyPartial(orig, item);
             Update(orig);
             return orig;

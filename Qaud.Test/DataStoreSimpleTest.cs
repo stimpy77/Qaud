@@ -6,11 +6,13 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Transactions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 namespace Qaud.Test
 {
     public abstract class DataStoreSimpleTest
     {
-        private IDataStore<FooModel> _dataStore;
+        // ReSharper disable EmptyGeneralCatchClause,InconsistentNaming, PossibleNullReferenceException
+        private readonly IDataStore<FooModel> _dataStore;
 
         protected DataStoreSimpleTest(IDataStore<FooModel> dataStore)
         {
@@ -365,5 +367,8 @@ namespace Qaud.Test
         {
             _dataStore.SaveChanges();
         }
+        // ReSharper restore PossibleNullReferenceException
+        // ReSharper restore InconsistentNaming
+        // ReSharper restore EmptyGeneralCatchClause
     }
 }

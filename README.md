@@ -151,7 +151,7 @@ generic interfaces such that **all data is stored either in tables or in a "docu
 a key**, one can jump from any data provider to another without modifying any code except for initial setup 
 such as in dependency injection initializers. This is the ideal; unfortunately, in typical scenarios this
 ideal it simplistic and not achievable in larger applications. The goal of QAUD is to get us a number of 
-steps towards it, or to achieve it entirely in trivial prototype solutions. 
+steps towards that ideal, or to achieve it entirely in trivial prototype solutions. 
 
 In QAUD's case, versatility comes at a few costs, starting with price of relationship awareness. It would be 
 entirely dependent upon the data provider or O/RM to break down related entities into their relationships. 

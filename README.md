@@ -14,27 +14,6 @@ basic set of alteration operations.
 * An in-memory **SortedDictionary** implementation is passing initial very basic tests.
 * Other ORMs and data repositories are yet to be added.
 
-## Background
-
-The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not know
-the full measure of the technology behind the DAL. Most DALs start with key-based table or document structures, so this 
-solution builds upon that premise.
-
-For example, someone implementing a dynamic web site, such as an online store, might use `IDataStore<T>` for all
-data storage operations because he might not know whether the deployed solution will build upon MongoDB, MySQL, 
-SQL Server, or some other server. By using `IDataStore<T>` for all DAL, the prototype solution can switch the 
-underlying database, NoSQL, or in-memory data storage implementation by only changing the IoC/DI initializer, 
-assuming `IDataStore<T>` has been generically implemented for the chosen actual database implementation.
-
-Building applications upon `IDataStore<T>` would only be recommended for accelerating **prototype application 
-development** or for applications where **DAL targeting versatility is a priority concern**.
-An enterprise environment that is heavily dependent upon the Microsoft stack, including SQL Server, would not
-benefit from `IDataStore<T>` as much as a development team or individual that is focused on building an 
-application with **an unknown or wide range of target environments and/or storage dependencies**.
-
-Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon 
-`ICrud<T>`/`ICrudEx<T>`, can utilize in-memory implementations when implementing functional tests.
-
 ## `ICrud<T>` has come at last.
 
 The base interface is `ICrud<T>`; the following summarizes it:
@@ -111,6 +90,65 @@ The complete interface for a repository is `IDataStore<T>`; the following summar
 
 Note: Most of these non-CRUD support members explicitly declared on `IDataStore<T>` should be implemented 
 explicitly, to conveniently hide from consumer code (i.e. from intellisense).
+
+## Background
+
+The objective behind QAUD is to facilitate a DAL (Data Access Layer) into prototype applications that do not 
+need to know the full measure of the technology behind the DAL, as long as core expectations of CRUD 
+(Create, Read, Update, Delete) are met with a consistent interface. Most DALs start with key-based table or 
+document structures, so this solution builds upon that premise.
+
+Frustrations have arisen where it has been observed that IQueryable seems to be supported everywhere, in all
+data access libraries and tools, which makes it very easy to work with read-only data sources without being
+concerned about the driver or provider of the data source, but no effort has been made to consolidate the 
+other data access operations of adding, updating, and deleting data. This is what drove the initial creation 
+of this library.
+
+### Not Another O/RM (but then again ...)
+
+O/RMs (Object-to-Relational Mappers) serve an important role in a developer's life, which is primarily
+to write data access code without writing it directly in SQL. Several approaches have been made over the 
+years to provide productivity tooling to developers to support interacting with a database with as little
+effort as feasibly possible. The "holy grails" first appeared for .NET in NHibernate, the .NET migration
+of Hibernate, followed by LINQ-to-SQL, followed by Entity Framework "Magical Unicorn Edition" (which 
+supports the Code First programming model).
+
+This is all great, but there are a couple issues here. First, what if I want to switch from NHibernate to 
+Entity Framework? Or what if I begin targeting SQL Server on Windows and get comfortable with using 
+Entity Framework, but then decide to instead target MongoDB or Cassandra? 
+
+If I am willing to choose to use simpler conventions of data access such that **all data is stored either
+in a table or in a "document", all data has a key, and programmatic relationships as with "navigation 
+properties" are not high on my priority list**, I can jump from any data provider to another without
+modifying any code except for initial setup such as in dependency injection initializers. 
+
+This versatility comes at a few costs, starting with price of relationship awareness. It would be 
+entirely dependent upon the data provider or O/RM to break down related entities into their relationships. 
+Fortunately, when using a relational-aware O/RM with QAUD, the expected behavior as with "navigation 
+properties" can still work as before, the developer will just need to be aware of his limitations when 
+switching implementations to something relationally unaware, such as Cassandra.
+
+To the extent that my objective is to just serialize a chunk of data with as minimum coding effort as possible,
+QAUD implementations fit the same objectives of convenience and interface consistency as O/RMs. However,
+to the extent that O/RMs also make efforts to support relationships between entitites, etc., QAUD does not
+qualify as an O/RM.
+
+### Scenarios
+
+Someone implementing a dynamic web site, such as an online store, might use `IDataStore<T>` for all
+data storage operations because he might not know whether the deployed solution will build upon MongoDB, MySQL, 
+SQL Server, or some other server. By using `IDataStore<T>` for all DAL, the prototype solution can switch the 
+underlying database, NoSQL, or in-memory data storage implementation by only changing the IoC/DI initializer, 
+assuming `IDataStore<T>` has been generically implemented for the chosen actual database implementation.
+
+Building applications upon `IDataStore<T>` would only be recommended for accelerating **prototype application 
+development** or for applications where **DAL targeting versatility is a priority concern**.
+An enterprise environment that is heavily dependent upon the Microsoft stack, including SQL Server, would not
+benefit from `IDataStore<T>` as much as a development team or individual that is focused on building an 
+application with **an unknown or wide range of target environments and/or storage dependencies**.
+
+Another situation is where an application that builds entirely upon `IDataStore<T>`, or at least upon 
+`ICrud<T>`/`ICrudEx<T>`, can utilize in-memory implementations when implementing functional tests.
 
 _____
 

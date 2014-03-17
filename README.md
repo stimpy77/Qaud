@@ -130,10 +130,10 @@ Fortunately, when using a relational-aware O/RM with QAUD, the expected behavior
 properties" can still work as before, the developer will just need to be aware of his limitations when 
 switching implementations to something relationally unaware, such as Cassandra.
 
-To the extent that my objective is to just serialize a chunk of data with as minimum coding effort as possible,
-QAUD implementations fit the same objectives of convenience and interface consistency as O/RMs. However,
-to the extent that O/RMs also make efforts to support relationships between entitites, etc., QAUD does not
-qualify as an O/RM.
+To the extent that the objective of this project is to just serialize a chunk of data with as minimum coding 
+effort as possible, QAUD implementations fit the same objectives of convenience and interface 
+consistency as O/RMs. However, to the extent that O/RMs also make efforts to support relationships 
+between entitites, etc., QAUD does not qualify as an O/RM.
 
 ### Scenarios
 

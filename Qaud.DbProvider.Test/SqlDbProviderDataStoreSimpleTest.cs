@@ -10,11 +10,18 @@ namespace Qaud.DbProvider.Test
     public class SqlDbProviderDataStoreSimpleTest : DataStoreSimpleTest
     {
         private const string TEST_DATABASE_NAME = "QAUD_TEST";
-        private const string TEST_CONNECTION_STRING = "Data Source=(localdb)\\v11.0;Integrated Security=true;Database=" + TEST_DATABASE_NAME + ";";
+        private const string TEST_CONNECTION_STRING = "Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=true;Database=" + TEST_DATABASE_NAME + ";";
         public SqlDbProviderDataStoreSimpleTest()
-            : base(new DbProviderDataStore<FooModel>(DbProviderFactories.GetFactory("System.Data.SqlClient"), TEST_CONNECTION_STRING))
+            : base(CreateDbProviderDataStore())
         {
             RecreateTable();
+        }
+
+        private static DbProviderDataStore<FooModel> CreateDbProviderDataStore()
+        {
+            var sqlClient = DbProviderFactories.GetFactory("System.Data.SqlClient");
+            var dataStore = new DbProviderDataStore<FooModel>(sqlClient, TEST_CONNECTION_STRING);
+            return dataStore;
         }
 
         private SqlConnection NewConnection(bool autoOpen = true)

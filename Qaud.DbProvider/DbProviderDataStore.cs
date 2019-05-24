@@ -23,6 +23,7 @@ namespace Qaud.DbProvider
         {
             _providerFactory = providerFactory;
             _connection = _providerFactory.CreateConnection();
+            _connection.ConnectionString = connectionName;
             _memberResolver = new EntityMemberResolver<T>();
             _connName = connectionName;
         }
@@ -58,6 +59,7 @@ namespace Qaud.DbProvider
         {
             return Activator.CreateInstance<T>();
         }
+
 
         public virtual void Add(T item)
         {

@@ -97,7 +97,8 @@ publish/
 *.pubxml
 
 # NuGet Packages Directory
-packages/
+## TODO: If you have NuGet Package Restore enabled, uncomment the next line
+#packages/
 
 # Windows Azure Build Output
 csx
@@ -151,6 +152,3 @@ $RECYCLE.BIN/
 
 README.html
 README.min.html
-
-.vs/
-/packages.bak

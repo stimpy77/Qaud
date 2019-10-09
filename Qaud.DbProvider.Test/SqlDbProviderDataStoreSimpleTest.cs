@@ -53,27 +53,30 @@ namespace Qaud.DbProvider.Test
                             ";
             try
             {
-                var newdb = NewConnection(false);
-                newdb.ConnectionString = TEST_CONNECTION_STRING.Substring(0, TEST_CONNECTION_STRING.IndexOf("Database="));
-                newdb.Open();
-                var cmd = new SqlCommand(cmdCreateDatabase, newdb);
-                cmd.ExecuteNonQuery();
+                using (var newdb = NewConnection(false))
+                {
+                    newdb.ConnectionString = TEST_CONNECTION_STRING.Substring(0, TEST_CONNECTION_STRING.IndexOf("Database="));
+                    newdb.Open();
+                    using(var cmd = new SqlCommand(cmdCreateDatabase, newdb))
+                        cmd.ExecuteNonQuery();
+                }
             }
             catch {} // if db exists that's fine
             try
             {
-                var cmd2 = new SqlCommand(cmdDrop, NewConnection());
-                cmd2.ExecuteNonQuery();
+                using (var cmd2 = new SqlCommand(cmdDrop, NewConnection()))
+                    cmd2.ExecuteNonQuery();
             }
             catch { }
-            var cmd3 = new SqlCommand(cmdCreate, NewConnection());
-            cmd3.ExecuteNonQuery();
+            using( var cmd3 = new SqlCommand(cmdCreate, NewConnection()))
+                cmd3.ExecuteNonQuery();
         }
 
         protected override void AddItemToStore(FooModel item)
         {
-            var conn = NewConnection();
-            var sql = @"INSERT INTO FooModel
+            using (var conn = NewConnection())
+            {
+                var sql = @"INSERT INTO FooModel
                         (
                             ID, 
                             CreateDate,
@@ -85,11 +88,15 @@ namespace Qaud.DbProvider.Test
                             @Title,
                             @Content
                         )";
-            var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.Add("@ID", item.ID);
-            cmd.Parameters.Add("@CreateDate", item.CreateDate);
-            cmd.Parameters.Add("@Title", item.Title);
-            cmd.Parameters.Add("@Content", item.Content);
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.Add("@ID", item.ID);
+                    cmd.Parameters.Add("@CreateDate", item.CreateDate);
+                    cmd.Parameters.Add("@Title", (object)item.Title ?? DBNull.Value);
+                    cmd.Parameters.Add("@Content", (object)item.Content ?? DBNull.Value);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         protected override void CleanOutItemFromStore(FooModel item)

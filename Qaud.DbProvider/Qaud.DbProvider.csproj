@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DbProviderDataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlDataExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qaud\Qaud.csproj">

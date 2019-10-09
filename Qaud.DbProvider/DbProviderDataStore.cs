@@ -28,33 +28,6 @@ namespace Qaud.DbProvider
             _memberResolver = new EntityMemberResolver<T>();
         }
 
-        private void OpenIfClosed()
-        {
-            if (string.IsNullOrEmpty(_connection.ConnectionString))
-            {
-                var connStringConfig = ConfigurationManager.ConnectionStrings[_connName];
-                _connection.ConnectionString = connStringConfig == null 
-                    ? _connName 
-                    : connStringConfig.ConnectionString;
-            }
-            if (_connection.State == ConnectionState.Broken) 
-                _connection.Close();
-            if (_connection.State == ConnectionState.Closed)
-            {
-                try
-                {
-                    _connection.Open();
-                }
-                catch
-                {
-                    var connstring = _connection.ConnectionString;
-                    _connection = _providerFactory.CreateConnection();
-                    _connection.ConnectionString = connstring;
-                    _connection.Open();
-                }
-            }
-        }
-
         public virtual T Create()
         {
             return Activator.CreateInstance<T>();
@@ -69,15 +42,53 @@ namespace Qaud.DbProvider
 
         private DbDataAdapter InitializeDataAdapter()
         {
+            var keymembers = _memberResolver.KeyPropertyMembers;
             var adapter = _providerFactory.CreateDataAdapter();
-            adapter.SelectCommand = InitializeSelectCommand(_providerFactory.CreateCommand());
-            adapter.InsertCommand = InitializeInsertCommand(_providerFactory.CreateCommand());
-            adapter.DeleteCommand = InitializeDeleteCommand(_providerFactory.CreateCommand());
-            adapter.UpdateCommand = InitializeUpdateCommand(_providerFactory.CreateCommand());
+            adapter.SelectCommand = PreinitializeSelectCommand(_providerFactory.CreateCommand());
+            var cmd = _providerFactory.CreateCommandBuilder();
+            cmd.DataAdapter = adapter;
+            adapter.InsertCommand = cmd.GetInsertCommand();
+            CloneParameters(adapter.InsertCommand, adapter.SelectCommand);
+            adapter.SelectCommand.CommandText = adapter.SelectCommand.CommandText.Replace("*", string.Join(",", adapter.SelectCommand.Parameters.Cast<DbParameter>().Select(p => p.SourceColumn)));
+            adapter.SelectCommand.CommandText += GetIdWhereClause(adapter.SelectCommand);
+            for (var p = adapter.SelectCommand.Parameters.Count - 1; p >= 0; p--)
+            {
+                if (!keymembers.Any(km => km.Name.ToLower() == adapter.SelectCommand.Parameters[p].SourceColumn.ToLower()))
+                    adapter.SelectCommand.Parameters.RemoveAt(p);
+            }
+            adapter.DeleteCommand = InitializeDeleteCommand(cmd.GetDeleteCommand());
+            adapter.UpdateCommand = InitializeUpdateCommand(cmd.GetUpdateCommand());
             return adapter;
         }
 
-        private DbCommand InitializeSelectCommand(DbCommand cmd)
+        private string GetIdWhereClause(DbCommand selectCommand)
+        {
+            return " WHERE " + string.Join(" AND ",
+                            _memberResolver.KeyPropertyMembers.Select(k
+                            =>
+                            {
+                                var param = selectCommand.Parameters.Cast<DbParameter>().First(p => p.SourceColumn.ToLower() == k.Name.ToLower());
+                                return "(" + param.ParameterName + " IS NULL OR " + k.Name + " = " + param.ParameterName + ")";
+                            }));
+        }
+
+        private void CloneParameters(DbCommand src, DbCommand target)
+        {
+            target.Parameters.AddRange(src.Parameters.Cast<DbParameter>().Select(rp =>
+            {
+                var param = target.CreateParameter();
+                param.ParameterName = rp.ParameterName;
+                param.SourceColumn = rp.SourceColumn;
+                param.DbType = rp.DbType;
+                param.Size = rp.Size;
+                param.Precision = rp.Precision;
+                param.SourceColumnNullMapping = rp.SourceColumnNullMapping;
+                param.Value = rp.Value;
+                return param;
+            }).ToArray());
+        }
+
+        private DbCommand PreinitializeSelectCommand(DbCommand cmd)
         {
             cmd.Connection = CreateConnection();
             if (cmd.Connection.GetType().FullName.ToLower().Contains("sql"))
@@ -94,24 +105,23 @@ namespace Qaud.DbProvider
             return cmd;
         }
 
-        private DbCommand InitializeInsertCommand(DbCommand cmd)
-        {
-            cmd.Connection = CreateConnection();
-            return cmd;
-        }
-
-        private DbCommand InitializeUpdateCommand(DbCommand cmd)
-        {
-            cmd.Connection = CreateConnection();
-            return cmd;
-        }
-
         private DbCommand InitializeDeleteCommand(DbCommand cmd)
         {
             cmd.Connection = CreateConnection();
-            cmd.CommandText = "DELETE FROM " + StoreName + " WHERE "
-                              + (string.Join(" AND ",
-                                  _memberResolver.KeyPropertyMembers.Select(m => "[" + m.Name + "] = @" + m.Name)));
+            cmd.CommandText = "DELETE FROM " + StoreName + GetIdWhereClause(cmd);
+            return cmd;
+        }
+        private DbCommand InitializeUpdateCommand(DbCommand cmd)
+        {
+            cmd.Connection = CreateConnection();
+            var refparams = cmd.Parameters.Cast<DbParameter>();
+            cmd.CommandText = "UPDATE [" + StoreName + "] SET "
+                + string.Join(", ", _memberResolver.NonKeyPropertyMembers.Where(nk => !IsComplexType(nk.PropertyType)).Select(p =>
+                {
+                    var param = refparams.First(rp => rp.SourceColumn.ToLower() == p.Name.ToLower());
+                    return "[" + p.Name + "] = " + param.ParameterName;
+                }))
+                + GetIdWhereClause(cmd);
             return cmd;
         }
 
@@ -125,27 +135,30 @@ namespace Qaud.DbProvider
         public virtual void Add(T item)
         {
             var cmdbuilder = CreateCommandBuilder();
-            var insertcmd = cmdbuilder.GetInsertCommand(true);
-            var dic = _memberResolver.ConvertToDictionary(item);
-            foreach (var kvp in dic)
+            using (var insertcmd = cmdbuilder.GetInsertCommand(true))
             {
-                var t = kvp.Value.GetType();
-                if (!IsComplexType(t))
+                var dic = _memberResolver.ConvertToDictionary(item);
+                foreach (var kvp in dic)
                 {
-                    var param = insertcmd.Parameters.Cast<DbParameter>()
-                        .First(
-                            p =>
-                                p.ParameterName.ToLower() == kvp.Key.ToLower() ||
-                                p.ParameterName.ToLower() == "@" + kvp.Key.ToLower());
-                    param.Value = kvp.Value;
-                    if (t == typeof(string))
-                        param.Size = ((string) kvp.Value ?? "").Length;
+                    var t = kvp.Value.GetType();
+                    if (!IsComplexType(t))
+                    {
+                        var param = insertcmd.Parameters.Cast<DbParameter>()
+                            .First(
+                                p =>
+                                    p.ParameterName.ToLower() == kvp.Key.ToLower() ||
+                                    p.ParameterName.ToLower() == "@" + kvp.Key.ToLower());
+                        param.Value = kvp.Value;
+                        if (t == typeof(string))
+                            param.Size = ((string)kvp.Value ?? "").Length;
+                    }
                 }
-            }
-            insertcmd.Connection = _connection;
-            OpenIfClosed();
-            insertcmd.Prepare();
-            insertcmd.ExecuteNonQuery();
+                insertcmd.Connection = _connection;
+                if (insertcmd.Connection.State == ConnectionState.Closed)
+                    insertcmd.Connection.Open();
+                insertcmd.Prepare();
+                insertcmd.ExecuteNonQuery();
+            }            
         }
 
         private bool IsComplexType(Type t)
@@ -178,46 +191,55 @@ namespace Qaud.DbProvider
             }
             for (var i=0; i<key.Length; i++)
             {
-                var parameter = selectCmd.CreateParameter();
-                parameter.ParameterName = keymembers[i].Name;
+                var parameter = selectCmd.Parameters.Cast<DbParameter>().First(p => p.SourceColumn.ToLower() == keymembers[i].Name.ToLower());
                 parameter.Value = key[i];
             }
-            OpenIfClosed();
-            selectCmd.Prepare();
-            using (var result = selectCmd.ExecuteReader())
+            var parameters = selectCmd.Parameters.Cast<DbParameter>().ToList();
+            selectCmd.Parameters.PrepareParams();
+            using (selectCmd.Connection)
             {
-                if (result.HasRows && result.Read())
+                if (selectCmd.Connection.State == ConnectionState.Closed)
+                    selectCmd.Connection.Open();
+                selectCmd.Prepare();
+                using (var result = selectCmd.ExecuteReader())
                 {
-                    var dictionary = _memberResolver.ConvertToDictionary(result);
-                    var item = Create();
-                    _memberResolver.HydrateFromDictionary(item, dictionary);
-                    return item;
+                    if (result.HasRows && result.Read())
+                    {
+                        var dic = result.RowAsDictionary();
+                        var item = Create();
+                        _memberResolver.HydrateFromDictionary(item, dic);
+                        return item;
+                    }
+                    return default(T);
                 }
-                return default(T);
             }
         }
 
         public virtual T Get(T lookup)
         {
-            return Get(_memberResolver.GetKeyPropertyValues(lookup));
+            return Get(_memberResolver.GetKeyPropertyValues(lookup).ToArray());
         }
 
         public virtual void Update(T item)
         {
             var cmdbuilder = CreateCommandBuilder();
-            var updatecmd = cmdbuilder.GetUpdateCommand(true);
-            var dic = _memberResolver.ConvertToDictionary(item);
+            var updatecmd = cmdbuilder.DataAdapter.UpdateCommand;
+            var sourceDic = _memberResolver.ConvertToDictionary(item);
+            var dic = _memberResolver.KeyPropertyMembers.Union(_memberResolver.NonKeyPropertyMembers.Where(p => !IsComplexType(p.PropertyType)))
+                .ToDictionary(r => r.Name, v => sourceDic[v.Name]);
             foreach (var kvp in dic)
             {
-                updatecmd.Parameters.Cast<DbParameter>()
-                    .First(
-                        p =>
-                            p.ParameterName.ToLower() == kvp.Key.ToLower() ||
-                            p.ParameterName.ToLower() == "@" + kvp.Key.ToLower())
-                    .Value = kvp.Value;
+                var param = updatecmd.Parameters.Cast<DbParameter>().First(rp => rp.SourceColumn.ToLower() == kvp.Key.ToLower());
+                param.Value = kvp.Value;
             }
-            updatecmd.Prepare();
-            updatecmd.ExecuteNonQuery();
+            updatecmd.Parameters.PrepareParams();
+            using (updatecmd.Connection)
+            {
+                if (updatecmd.Connection.State == ConnectionState.Closed)
+                    updatecmd.Connection.Open();
+                updatecmd.Prepare();
+                updatecmd.ExecuteNonQuery();
+            }
         }
 
         public virtual void UpdateRange(IEnumerable<T> items)
@@ -227,7 +249,7 @@ namespace Qaud.DbProvider
 
         public virtual T UpdatePartial(object item)
         {
-            var key = _memberResolver.GetKeyPropertyValues(item);
+            var key = _memberResolver.GetKeyPropertyValues(item).ToArray();
             var orig = Get(key);
             _memberResolver.ApplyPartial(orig, item);
             Update(orig);
@@ -236,10 +258,10 @@ namespace Qaud.DbProvider
 
         public virtual void Delete(params object[] key)
         {
+            if (key.All(k => k is T)) key = _memberResolver.GetKeyPropertyValues(key.First()).ToArray();
             if (key == null) key = new object[] { };
             var cmdbuilder = CreateCommandBuilder();
             var deleteCmd = cmdbuilder.DataAdapter.DeleteCommand;
-            var insertCmd = cmdbuilder.GetInsertCommand();
             var keymembers = _memberResolver.KeyPropertyMembers.ToArray();
             if (keymembers.Length != key.Length)
             {
@@ -247,24 +269,23 @@ namespace Qaud.DbProvider
             }
             for (var i = 0; i < key.Length; i++)
             {
-                var refparameter = insertCmd.Parameters.Cast<DbParameter>()
+                var parameter = deleteCmd.Parameters.Cast<DbParameter>()
                     .First(p => p.SourceColumn.ToLower() == keymembers[i].Name.ToLower());
-                var parameter = deleteCmd.CreateParameter();
                 parameter.Value = key[i];
-                parameter.DbType = refparameter.DbType;
-                parameter.Size = refparameter.Size;
-                parameter.ParameterName = "@" + refparameter.SourceColumn;
-                deleteCmd.Parameters.Add(parameter);
             }
-            if (deleteCmd.Connection.State == ConnectionState.Closed)
-                deleteCmd.Connection.Open();
-            deleteCmd.Prepare();
-            deleteCmd.ExecuteNonQuery();
+            deleteCmd.Parameters.PrepareParams();
+            using (deleteCmd.Connection)
+            {
+                if (deleteCmd.Connection.State == ConnectionState.Closed)
+                    deleteCmd.Connection.Open();
+                deleteCmd.Prepare();
+                deleteCmd.ExecuteNonQuery();
+            }
         }
 
         public virtual void DeleteItem(T item)
         {
-            Delete(_memberResolver.GetKeyPropertyValues(item));
+            Delete(_memberResolver.GetKeyPropertyValues(item).ToArray());
         }
 
         public virtual void DeleteRange(IEnumerable<T> items)
@@ -277,21 +298,26 @@ namespace Qaud.DbProvider
 
             var cmdbuilder = CreateCommandBuilder();
             var selectCmd = cmdbuilder.DataAdapter.SelectCommand;
-            selectCmd.Connection = _connection;
-            OpenIfClosed();
-            selectCmd.Prepare();
-            var reader = selectCmd.ExecuteReader();
-            var items = new List<T>();
-            if (reader.HasRows)
+            selectCmd.Parameters.PrepareParams();
+            using (selectCmd.Connection)
             {
-                while (reader.Read())
+                if (selectCmd.Connection.State == ConnectionState.Closed)
+                    selectCmd.Connection.Open();
+                selectCmd.Prepare();
+                var reader = selectCmd.ExecuteReader();
+                var items = new List<T>();
+                if (reader.HasRows)
                 {
-                    var item = Create();
-                    var row = _memberResolver.ConvertToDictionary(reader);
-                    _memberResolver.HydrateFromDictionary(item, row);
+                    while (reader.Read())
+                    {
+                        var item = Create();
+                        var row = reader.RowAsDictionary();
+                        _memberResolver.HydrateFromDictionary(item, row);
+                        items.Add(item);
+                    }
                 }
+                return items;
             }
-            return items;
         }
 
 

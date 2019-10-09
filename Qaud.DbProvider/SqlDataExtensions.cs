@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Qaud.DbProvider.Test
+namespace Qaud.DbProvider
 {
     public static class SqlDataExtensions
     {
@@ -24,6 +24,17 @@ namespace Qaud.DbProvider.Test
             }
 
             return dic;
+        }
+
+        internal static void PrepareParams(this DbParameterCollection parameters)
+        {
+
+            foreach (DbParameter param in parameters)
+            {
+                if (param.Value == null) param.Value = DBNull.Value;
+                if (param.DbType.ToString().ToLower().Contains("string"))
+                    param.Size = (param.Size == 0) ? ((param.Value == DBNull.Value || param.Value.ToString().Length == 0) ? 1 : param.Value.ToString().Length) : param.Size;
+            }
         }
     }
 }

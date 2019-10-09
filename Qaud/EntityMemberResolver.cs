@@ -17,6 +17,14 @@ namespace Qaud
         private IEnumerable<PropertyInfo> _keyMembers;
         private IEnumerable<PropertyInfo> _publicProperties;
 
+        public IEnumerable<PropertyInfo> NonKeyPropertyMembers
+        {
+            get
+            {
+                return typeof(T).GetProperties().Where(p => !KeyPropertyMembers.Contains(p));
+            }
+        }
+
         public IEnumerable<PropertyInfo> KeyPropertyMembers
         {
             get
@@ -47,7 +55,7 @@ namespace Qaud
         public IEnumerable<object> GetKeyPropertyValues(object item)
         {
             var itemType = item.GetType();
-            return KeyPropertyMembers.Select(p => itemType.GetProperty(p.Name).GetValue(item, new object[] {}));
+            return KeyPropertyMembers.Select(p => itemType.GetProperty(p.Name).GetValue(item));
         }
 
         /// <summary>

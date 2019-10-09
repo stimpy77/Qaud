@@ -11,6 +11,11 @@ namespace Qaud.EntityFramework.Test
     {
         public class TestEFDataStoreContext : DbContext
         {
+            public TestEFDataStoreContext() : base("TestDb")
+            {
+
+            }
+
             public DbSet<FooModel> FooModels { get; set; }
 
             public void SetupDB()

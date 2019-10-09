@@ -23,8 +23,9 @@ namespace Qaud.DbProvider
         {
             _providerFactory = providerFactory;
             _connection = _providerFactory.CreateConnection();
-            _memberResolver = new EntityMemberResolver<T>();
+            _connection.ConnectionString = connectionName;
             _connName = connectionName;
+            _memberResolver = new EntityMemberResolver<T>();
         }
 
         private void OpenIfClosed()
@@ -59,9 +60,71 @@ namespace Qaud.DbProvider
             return Activator.CreateInstance<T>();
         }
 
-        public virtual void Add(T item)
+        private DbCommandBuilder CreateCommandBuilder()
         {
             var cmdbuilder = _providerFactory.CreateCommandBuilder();
+            cmdbuilder.DataAdapter = InitializeDataAdapter();
+            return cmdbuilder;
+        }
+
+        private DbDataAdapter InitializeDataAdapter()
+        {
+            var adapter = _providerFactory.CreateDataAdapter();
+            adapter.SelectCommand = InitializeSelectCommand(_providerFactory.CreateCommand());
+            adapter.InsertCommand = InitializeInsertCommand(_providerFactory.CreateCommand());
+            adapter.DeleteCommand = InitializeDeleteCommand(_providerFactory.CreateCommand());
+            adapter.UpdateCommand = InitializeUpdateCommand(_providerFactory.CreateCommand());
+            return adapter;
+        }
+
+        private DbCommand InitializeSelectCommand(DbCommand cmd)
+        {
+            cmd.Connection = CreateConnection();
+            if (cmd.Connection.GetType().FullName.ToLower().Contains("sql"))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT * FROM " + StoreName;
+            }
+            else
+            {
+                cmd.CommandType = CommandType.TableDirect;
+                cmd.CommandText = StoreName;
+            }
+
+            return cmd;
+        }
+
+        private DbCommand InitializeInsertCommand(DbCommand cmd)
+        {
+            cmd.Connection = CreateConnection();
+            return cmd;
+        }
+
+        private DbCommand InitializeUpdateCommand(DbCommand cmd)
+        {
+            cmd.Connection = CreateConnection();
+            return cmd;
+        }
+
+        private DbCommand InitializeDeleteCommand(DbCommand cmd)
+        {
+            cmd.Connection = CreateConnection();
+            cmd.CommandText = "DELETE FROM " + StoreName + " WHERE "
+                              + (string.Join(" AND ",
+                                  _memberResolver.KeyPropertyMembers.Select(m => "[" + m.Name + "] = @" + m.Name)));
+            return cmd;
+        }
+
+        private DbConnection CreateConnection()
+        {
+            var conn = _providerFactory.CreateConnection();
+            conn.ConnectionString = _connName;
+            return conn;
+        }
+
+        public virtual void Add(T item)
+        {
+            var cmdbuilder = CreateCommandBuilder();
             var insertcmd = cmdbuilder.GetInsertCommand(true);
             var dic = _memberResolver.ConvertToDictionary(item);
             foreach (var kvp in dic)
@@ -69,12 +132,14 @@ namespace Qaud.DbProvider
                 var t = kvp.Value.GetType();
                 if (!IsComplexType(t))
                 {
-                    insertcmd.Parameters.Cast<DbParameter>()
+                    var param = insertcmd.Parameters.Cast<DbParameter>()
                         .First(
                             p =>
                                 p.ParameterName.ToLower() == kvp.Key.ToLower() ||
-                                p.ParameterName.ToLower() == "@" + kvp.Key.ToLower())
-                        .Value = kvp.Value;
+                                p.ParameterName.ToLower() == "@" + kvp.Key.ToLower());
+                    param.Value = kvp.Value;
+                    if (t == typeof(string))
+                        param.Size = ((string) kvp.Value ?? "").Length;
                 }
             }
             insertcmd.Connection = _connection;
@@ -85,7 +150,9 @@ namespace Qaud.DbProvider
 
         private bool IsComplexType(Type t)
         {
-            return t.IsPrimitive || t == typeof (DateTime) || t == typeof (DateTimeOffset);
+            return !(t.IsPrimitive || 
+                    t == typeof (DateTime) || t == typeof (DateTimeOffset) ||
+                    t == typeof(string));
         }
 
         public virtual void Add(T item, out T result)
@@ -102,7 +169,7 @@ namespace Qaud.DbProvider
         public virtual T Get(params object[] key)
         {
             if (key == null) key = new object[] {};
-            var cmdbuilder = _providerFactory.CreateCommandBuilder();
+            var cmdbuilder = CreateCommandBuilder();
             var selectCmd = cmdbuilder.DataAdapter.SelectCommand;
             var keymembers = _memberResolver.KeyPropertyMembers.ToArray();
             if (keymembers.Length != key.Length)
@@ -137,7 +204,7 @@ namespace Qaud.DbProvider
 
         public virtual void Update(T item)
         {
-            var cmdbuilder = _providerFactory.CreateCommandBuilder();
+            var cmdbuilder = CreateCommandBuilder();
             var updatecmd = cmdbuilder.GetUpdateCommand(true);
             var dic = _memberResolver.ConvertToDictionary(item);
             foreach (var kvp in dic)
@@ -170,8 +237,9 @@ namespace Qaud.DbProvider
         public virtual void Delete(params object[] key)
         {
             if (key == null) key = new object[] { };
-            var cmdbuilder = _providerFactory.CreateCommandBuilder();
-            var deleteCmd = cmdbuilder.GetDeleteCommand(true);
+            var cmdbuilder = CreateCommandBuilder();
+            var deleteCmd = cmdbuilder.DataAdapter.DeleteCommand;
+            var insertCmd = cmdbuilder.GetInsertCommand();
             var keymembers = _memberResolver.KeyPropertyMembers.ToArray();
             if (keymembers.Length != key.Length)
             {
@@ -179,10 +247,17 @@ namespace Qaud.DbProvider
             }
             for (var i = 0; i < key.Length; i++)
             {
+                var refparameter = insertCmd.Parameters.Cast<DbParameter>()
+                    .First(p => p.SourceColumn.ToLower() == keymembers[i].Name.ToLower());
                 var parameter = deleteCmd.CreateParameter();
-                parameter.ParameterName = keymembers[i].Name;
                 parameter.Value = key[i];
+                parameter.DbType = refparameter.DbType;
+                parameter.Size = refparameter.Size;
+                parameter.ParameterName = "@" + refparameter.SourceColumn;
+                deleteCmd.Parameters.Add(parameter);
             }
+            if (deleteCmd.Connection.State == ConnectionState.Closed)
+                deleteCmd.Connection.Open();
             deleteCmd.Prepare();
             deleteCmd.ExecuteNonQuery();
         }
@@ -200,7 +275,7 @@ namespace Qaud.DbProvider
         protected virtual List<T> GetAll()
         {
 
-            var cmdbuilder = _providerFactory.CreateCommandBuilder();
+            var cmdbuilder = CreateCommandBuilder();
             var selectCmd = cmdbuilder.DataAdapter.SelectCommand;
             selectCmd.Connection = _connection;
             OpenIfClosed();
@@ -301,6 +376,11 @@ namespace Qaud.DbProvider
         object IDataStore<T>.DataContext
         {
             get { return _providerFactory; }
+        }
+
+        public string StoreName
+        {
+            get { return typeof(T).Name; } // temporary implementation
         }
 
         public void Dispose()

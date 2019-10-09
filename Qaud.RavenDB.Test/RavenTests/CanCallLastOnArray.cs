@@ -1,10 +1,12 @@
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raven.Client.Indexes;
 using Raven.Tests.Helpers;
 using Xunit;
 
 namespace Qaud.RavenDB.Test.RavenTests
 {
+    [TestClass]
 	public class CanCallLastOnArray : RavenTestBase
 	{
 		private class Student
@@ -40,7 +42,7 @@ namespace Qaud.RavenDB.Test.RavenTests
 			}
 		}
 
-		[Fact]
+		[Fact,TestMethod]
 		public void WillSupportLast()
 		{
 			using (var store = NewDocumentStore())
@@ -59,8 +61,8 @@ namespace Qaud.RavenDB.Test.RavenTests
 					                     .Customize(customization => customization.WaitForNonStaleResults())
 					                     .ToList();
 
-					Assert.Empty(store.DatabaseCommands.GetStatistics().Errors);
-					Assert.Equal(1, results.Count);
+                    Xunit.Assert.Empty(store.DatabaseCommands.GetStatistics().Errors);
+                    Xunit.Assert.Equal(1, results.Count);
 				}
 			}
 		}

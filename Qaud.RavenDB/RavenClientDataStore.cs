@@ -264,5 +264,10 @@ namespace Qaud.RavenDB
             get { return true; }
         }
 
+        public string StoreName
+        {
+            get { return typeof(T).Name; } // temporary implementation
+        }
+
     }
 }

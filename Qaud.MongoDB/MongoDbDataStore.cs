@@ -301,6 +301,11 @@ namespace Qaud.MongoDB
         {
             get { return _db; }
         }
+
+        public string StoreName
+        {
+            get { return typeof(T).Name; } // temporary implementation
+        }
         private static string ResolveCollectionName(Type type)
         {
             // todo: use any clues from attributes or fluent descriptors that might define the collection name

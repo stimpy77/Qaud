@@ -152,3 +152,7 @@ $RECYCLE.BIN/
 
 README.html
 README.min.html
+/.vs/Qaud/v16/Server/sqlite3
+/.vs/Qaud/v16/TestStore/0
+/packages.bak
+/packages

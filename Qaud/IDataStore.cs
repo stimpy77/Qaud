@@ -69,6 +69,8 @@ namespace Qaud
         /// responsible for managing this data store.
         /// </summary>
         object DataContext { get; }
+
+        string StoreName { get; }
     }
 
     

@@ -12,7 +12,11 @@ namespace Qaud.Test
     public abstract class DataStoreSimpleTest
     {
         // ReSharper disable EmptyGeneralCatchClause,InconsistentNaming, PossibleNullReferenceException
-        private readonly IDataStore<FooModel> _dataStore;
+        private IDataStore<FooModel> _dataStore;
+        protected void SetDataSore(IDataStore<FooModel> store)
+        {
+            _dataStore = store;
+        }
 
         protected DataStoreSimpleTest(IDataStore<FooModel> dataStore)
         {

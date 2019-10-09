@@ -10,11 +10,18 @@ namespace Qaud.DbProvider.Test
     public class SqlDbProviderDataStoreSimpleTest : DataStoreSimpleTest
     {
         private const string TEST_DATABASE_NAME = "QAUD_TEST";
-        private const string TEST_CONNECTION_STRING = "Data Source=(localdb)\\v11.0;Integrated Security=true;Database=" + TEST_DATABASE_NAME + ";";
+        private const string TEST_CONNECTION_STRING = "Data Source=(localdb)\\mssqllocaldb;Integrated Security=true;Database=" + TEST_DATABASE_NAME + ";";
         public SqlDbProviderDataStoreSimpleTest()
-            : base(new DbProviderDataStore<FooModel>(DbProviderFactories.GetFactory("System.Data.SqlClient"), TEST_CONNECTION_STRING))
+            : base(getDataStoreProvider())
         {
             RecreateTable();
+        }
+
+        private static IDataStore<FooModel> getDataStoreProvider()
+        {
+            var factory = SqlClientFactory.Instance;
+            var dataStore = new DbProviderDataStore<FooModel>(factory, TEST_CONNECTION_STRING);
+            return dataStore;
         }
 
         private SqlConnection NewConnection(bool autoOpen = true)
@@ -52,7 +59,7 @@ namespace Qaud.DbProvider.Test
                 var cmd = new SqlCommand(cmdCreateDatabase, newdb);
                 cmd.ExecuteNonQuery();
             }
-            catch {}
+            catch {} // if db exists that's fine
             try
             {
                 var cmd2 = new SqlCommand(cmdDrop, NewConnection());
@@ -91,6 +98,7 @@ namespace Qaud.DbProvider.Test
             {
                 var cmdtext = "DELETE FROM FooModel WHERE ID = @ID";
                 var cmd = new SqlCommand(cmdtext, conn);
+                cmd.Parameters.AddWithValue("@ID", item.ID);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -101,12 +109,13 @@ namespace Qaud.DbProvider.Test
             {
                 var cmdtext = "SELECT * FROM FooModel WHERE ID = @ID";
                 var cmd = new SqlCommand(cmdtext, conn);
+                cmd.Parameters.AddWithValue("@ID", id);
                 var dr = cmd.ExecuteReader();
                 var hydrator = new EntityMemberResolver<FooModel>();
                 dr.Read();
                 var item = new FooModel();
                 hydrator.HydrateFromDictionary(item,
-                    hydrator.ConvertToDictionary(dr));
+                    dr.RowAsDictionary());
                 return item;
             }
         }

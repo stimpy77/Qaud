@@ -1,4 +1,4 @@
-QAUD (Query Add Update Delete) v0.2
+QAUD (Query Add Update Delete) v0.2.1
 ==================================
 ##<sub><sup>(QAUD is not a word. Don't fix it.)</sup></sub>
 QAUD is an interface plus implementations for QAUD, or CRUD, operations. 

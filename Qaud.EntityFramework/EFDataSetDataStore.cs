@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Qaud.EntityFramework
 {
@@ -294,7 +296,14 @@ namespace Qaud.EntityFramework
 
         public string StoreName
         {
-            get { return typeof(T).Name; } // temporary implementation
+            get
+            {
+                // temporary implementation
+                var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>();
+                if (tableAttr != null) return tableAttr.Name;
+                return typeof(T).Name;
+            }
         }
+
     }
 }

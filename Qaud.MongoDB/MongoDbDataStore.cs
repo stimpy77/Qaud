@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -304,8 +306,15 @@ namespace Qaud.MongoDB
 
         public string StoreName
         {
-            get { return typeof(T).Name; } // temporary implementation
+            get
+            {
+                // temporary implementation
+                var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>();
+                if (tableAttr != null) return tableAttr.Name;
+                return typeof(T).Name;
+            }
         }
+
         private static string ResolveCollectionName(Type type)
         {
             // todo: use any clues from attributes or fluent descriptors that might define the collection name

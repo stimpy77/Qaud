@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -406,7 +408,13 @@ namespace Qaud.DbProvider
 
         public string StoreName
         {
-            get { return typeof(T).Name; } // temporary implementation
+            get
+            {
+                // temporary implementation
+                var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>();
+                if (tableAttr != null) return tableAttr.Name;
+                return typeof(T).Name;
+            }
         }
 
         public void Dispose()

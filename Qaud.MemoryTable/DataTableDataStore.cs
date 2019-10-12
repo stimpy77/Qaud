@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -280,7 +281,14 @@ namespace Qaud.MemoryTable
 
         public string StoreName
         {
-            get { return typeof(T).Name; } // temporary implementation
+            get
+            {
+                // temporary implementation
+                var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>();
+                if (tableAttr != null) return tableAttr.Name;
+                return typeof(T).Name;
+            }
         }
+
     }
 }

@@ -16,14 +16,11 @@ namespace Qaud.EntityFramework.Test
             AppDomain.CurrentDomain.SetData("DataDirectory", context.TestDeploymentDir);
         }
 
-        private bool _init;
         [TestInitialize]
         public void TestInitialize()
         {
-            if (_init) return;
             SetDataSore(new TestEFDataStoreGenerator().Create());
             _dbset = (DbSet<FooModel>) DataStore.DataSet;
-            _init = true;
         }
 
         private DbSet<FooModel> _dbset;
@@ -42,8 +39,12 @@ namespace Qaud.EntityFramework.Test
             try
             {
                 _dbset.Remove(item);
+                this.SaveChanges();
             }
-            catch {}
+            catch (Exception)
+            {
+
+            }
         }
     
 

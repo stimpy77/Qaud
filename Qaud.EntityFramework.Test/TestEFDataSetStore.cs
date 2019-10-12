@@ -20,10 +20,13 @@ namespace Qaud.EntityFramework.Test
 
             public void SetupDB()
             {
-                if (Database.Exists()) Database.Delete();
-                Database.Create();
+                if (Database.Exists() && !DBCreated) Database.Delete();
+                else if (!Database.Exists()) Database.Create();
+                DBCreated = true;
             }
         }
+
+        internal static bool DBCreated;
         public EFDataSetDataStore<FooModel> Create()
         {
             var context = new TestEFDataStoreContext();

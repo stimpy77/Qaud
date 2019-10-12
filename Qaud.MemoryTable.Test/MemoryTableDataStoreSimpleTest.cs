@@ -18,10 +18,7 @@ namespace Qaud.MemoryTable.Test
         {
         }
 
-        private DataTable DataTable
-        {
-            get { return (DataTable) base.DataStore.DataSet; }
-        }
+        private DataTable DataTable => (DataTable) base.DataStore.DataSet;
 
         protected override void AddItemToStore(FooModel item)
         {

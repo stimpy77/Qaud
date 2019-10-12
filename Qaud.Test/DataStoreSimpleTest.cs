@@ -363,7 +363,8 @@ namespace Qaud.Test
         /// <summary>
         /// Returns the <see cref="IDataStore{FooModel}"/> being tested.
         /// </summary>
-        protected IDataStore<FooModel> DataStore { get { return _dataStore; } }
+        protected IDataStore<FooModel> DataStore => _dataStore;
+
         /// <summary>
         /// Save changes made via <see cref="AddItemToStore"/>, <see cref="CleanOutItemFromStore"/>, or <see cref="GetItemById"/>.
         /// </summary>

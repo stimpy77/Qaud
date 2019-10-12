@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Raven.Client.Indexes;
 using Raven.Tests.Helpers;
 using Xunit;
+using Assert = Xunit.Assert;
 
 namespace Qaud.RavenDB.Test.RavenTests
 {
@@ -42,7 +43,7 @@ namespace Qaud.RavenDB.Test.RavenTests
 			}
 		}
 
-		[Fact,TestMethod]
+        [Fact, TestMethod]
 		public void WillSupportLast()
 		{
 			using (var store = NewDocumentStore())
@@ -61,8 +62,8 @@ namespace Qaud.RavenDB.Test.RavenTests
 					                     .Customize(customization => customization.WaitForNonStaleResults())
 					                     .ToList();
 
-                    Xunit.Assert.Empty(store.DatabaseCommands.GetStatistics().Errors);
-                    Xunit.Assert.Equal(1, results.Count);
+					Assert.Empty(store.DatabaseCommands.GetStatistics().Errors);
+					Assert.Equal(1, results.Count);
 				}
 			}
 		}

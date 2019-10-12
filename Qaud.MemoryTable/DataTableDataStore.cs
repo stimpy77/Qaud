@@ -22,7 +22,7 @@ namespace Qaud.MemoryTable
             Dictionary<string, object> props = _memberResolver.ConvertToDictionary(Activator.CreateInstance<T>());
             foreach (var prop in props)
             {
-                var column = new DataColumn(prop.Key, _memberResolver.TypeOfProperty(prop.Key));
+                var column = new DataColumn(prop.Key, _memberResolver.PropertyType(prop.Key));
                 if (_memberResolver.IsAutoIdentity(prop.Key))
                 {
                     column.AutoIncrement = true;
@@ -92,20 +92,11 @@ namespace Qaud.MemoryTable
             return GetEnumerator();
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        System.Linq.Expressions.Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        System.Linq.Expressions.Expression IQueryable.Expression => Query.Expression;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         public virtual T Get(T lookup)
         {
@@ -177,15 +168,9 @@ namespace Qaud.MemoryTable
 
         public virtual bool AutoSave { get; set; }
 
-        bool IDataStore<T>.SupportsNestedRelationships
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsNestedRelationships => false;
 
-        bool IDataStore<T>.SupportsTransactionScope
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsTransactionScope => false;
 
         public virtual void SaveChanges()
         {
@@ -193,20 +178,11 @@ namespace Qaud.MemoryTable
         }
 
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected virtual DataTable DataSet
-        {
-            get { return _dataTable; }
-        }
+        protected virtual DataTable DataSet => _dataTable;
 
-        object IDataStore<T>.DataSet
-        {
-            get { return DataSet; }
-        }
+        object IDataStore<T>.DataSet => DataSet;
 
-        object IDataStore<T>.DataContext
-        {
-            get { return null; }
-        }
+        object IDataStore<T>.DataContext => null;
 
         protected virtual T Hydrate(DataRow newRow)
         {
@@ -256,28 +232,19 @@ namespace Qaud.MemoryTable
             return expr.ToString();
         }
 
-        bool IDataStore<T>.SupportsComplexStructures
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsComplexStructures => false;
 
         /// <summary>
         /// Gets whether the data store implementation supports 
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
         /// </summary>
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => true;
 
         /// <summary>
         /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
         /// </summary>
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.CanQueueChanges => true;
 
         public string StoreName
         {

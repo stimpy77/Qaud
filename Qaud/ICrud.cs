@@ -179,12 +179,12 @@ namespace Qaud
     }
 
     /// <summary>
-    /// Indicates that the implementation is a container that supoprts removing an item given its key.
+    /// Indicates that the implementation is a container that supports removing an item given its key.
     /// </summary>
     public interface IDelete
     {
         /// <summary>
-        /// When implemented, deletes and destroys the specified <typeparamref name="T"/> object from this data store.
+        /// When implemented, deletes and destroys the object having the specified key from this data store.
         /// </summary>
         /// <param name="key">The key(s) of the item to be deleted.</param>
         void Delete(params object[] key);

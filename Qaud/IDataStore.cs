@@ -18,8 +18,8 @@ namespace Qaud
         bool AutoSave { get; set; }
 
         /// <summary>
-        /// When implemented, applies changes made using <see cref="Add"/>, <see cref="Update"/>, and/or 
-        /// <see cref="DeleteItem"/>.
+        /// When implemented, applies changes made using <see cref="IAddItem{T}.Add(T)"/>, <see cref="IUpdate{T}.Update"/>, and/or 
+        /// <see cref="IDelete.Delete"/>.
         ///  This method should have no effect if <see cref="AutoSave"/> is set to <value>true</value>, in which case 
         /// the changes would have already been applied.
         /// </summary>
@@ -70,6 +70,9 @@ namespace Qaud
         /// </summary>
         object DataContext { get; }
 
+        /// <summary>
+        /// Returns the table name (or equivalent) of the data stored for <typeparamref name="T"/>.
+        /// </summary>
         string StoreName { get; }
     }
 

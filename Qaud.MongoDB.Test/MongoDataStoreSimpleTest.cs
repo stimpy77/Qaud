@@ -61,10 +61,7 @@ namespace Qaud.MongoDB.Test
                     .GetMemberMap(memberName).ElementName;
         }
 
-        private new MongoDbDataStore<FooModel> DataStore
-        {
-            get { return (MongoDbDataStore<FooModel>)base.DataStore; }
-        }
+        private new MongoDbDataStore<FooModel> DataStore => (MongoDbDataStore<FooModel>)base.DataStore;
 
         [TestMethod]
         public void MongoDataStore_Add_Item_Adds_Item()

@@ -326,14 +326,7 @@ namespace Qaud.DbProvider
         /// <summary>
         /// Client-side filter with LINQ-to-Objects unless overridden
         /// </summary>
-        protected virtual IQueryable<T> Query
-        {
-            get
-            {
-                return GetAll().AsQueryable();
-                //throw new NotImplementedException();
-            }
-        }
+        protected virtual IQueryable<T> Query => GetAll().AsQueryable();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -345,25 +338,16 @@ namespace Qaud.DbProvider
             return Query.GetEnumerator();
         }
 
-        Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        Expression IQueryable.Expression => Query.Expression;
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         bool IDataStore<T>.AutoSave
         {
-            get { return true; }
-            set { throw new NotImplementedException(); }
+            get => true;
+            set => throw new NotImplementedException();
         }
 
         void IDataStore<T>.SaveChanges()
@@ -371,40 +355,19 @@ namespace Qaud.DbProvider
             // no-op
         }
 
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.CanQueueChanges => false;
 
-        bool IDataStore<T>.SupportsNestedRelationships
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsNestedRelationships => false;
 
-        bool IDataStore<T>.SupportsComplexStructures
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsComplexStructures => false;
 
-        bool IDataStore<T>.SupportsTransactionScope
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsTransactionScope => true;
 
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => false;
 
-        object IDataStore<T>.DataSet
-        {
-            get { return null; }
-        }
+        object IDataStore<T>.DataSet => null;
 
-        object IDataStore<T>.DataContext
-        {
-            get { return _providerFactory; }
-        }
+        object IDataStore<T>.DataContext => _providerFactory;
 
         public string StoreName
         {

@@ -86,13 +86,7 @@ namespace Qaud.MongoDB
         /// if your model (<typeparamref name="T"/>) is preconfigured with Bson-related
         /// attributes or you have applied a BsonClassMap.
         /// </summary>
-        protected virtual bool AutoConfig
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool AutoConfig => true;
 
         public T Create()
         {
@@ -128,7 +122,7 @@ namespace Qaud.MongoDB
             }
         }
 
-        private string GetElementName<T>(string memberName)
+        private string GetElementName(string memberName)
         {
             return
                 BsonClassMap.GetRegisteredClassMaps().First(cm => cm.ClassType == typeof(T))
@@ -150,7 +144,7 @@ namespace Qaud.MongoDB
             }
             var query = global::MongoDB.Driver.Builders.Query.And(
                 dic.Select(kvp => global::MongoDB.Driver.Builders.Query.EQ(
-                    GetElementName<T>(kvp.Key), BsonValue.Create(kvp.Value))));
+                    GetElementName(kvp.Key), BsonValue.Create(kvp.Value))));
             return query;
         }
 
@@ -228,10 +222,7 @@ namespace Qaud.MongoDB
             return changed;
         }
 
-        protected virtual IQueryable<T> Query
-        {
-            get { return _collection.AsQueryable(); }
-        }
+        protected virtual IQueryable<T> Query => _collection.AsQueryable();
 
         public virtual IEnumerator<T> GetEnumerator()
         {
@@ -243,25 +234,16 @@ namespace Qaud.MongoDB
             return GetEnumerator();
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        System.Linq.Expressions.Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        System.Linq.Expressions.Expression IQueryable.Expression => Query.Expression;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         bool IDataStore<T>.AutoSave
         {
-            get { return true; }
-            set { throw new NotImplementedException(); }
+            get => true;
+            set => throw new NotImplementedException();
         }
 
         public void SaveChanges()
@@ -269,40 +251,19 @@ namespace Qaud.MongoDB
             //throw new NotImplementedException();
         }
 
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.CanQueueChanges => false;
 
-        bool IDataStore<T>.SupportsNestedRelationships
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsNestedRelationships => false;
 
-        bool IDataStore<T>.SupportsComplexStructures
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsComplexStructures => true;
 
-        bool IDataStore<T>.SupportsTransactionScope
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsTransactionScope => false;
 
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => true;
 
-        object IDataStore<T>.DataSet
-        {
-            get { return _collection; }
-        }
+        object IDataStore<T>.DataSet => _collection;
 
-        object IDataStore<T>.DataContext
-        {
-            get { return _db; }
-        }
+        object IDataStore<T>.DataContext => _db;
 
         public string StoreName
         {

@@ -74,6 +74,7 @@ namespace Qaud.EntityFramework.Test
         [TestMethod]
         public void EFDataSetDataStore_Delete_Item_Range_Removes_Many_Items()
         {
+            var name = base.DataStore.StoreName;
             base.DataStore_Delete_Item_Range_Removes_Many_Items();
         }
 

@@ -39,10 +39,7 @@ namespace Qaud.RavenDB.Test
         {
         }
 
-        private DocumentStore DocumentStore
-        {
-            get { return (DocumentStore)base.DataStore.DataSet; }
-        }
+        private DocumentStore DocumentStore => (DocumentStore)base.DataStore.DataSet;
 
         protected override void AddItemToStore(FooModel item)
         {

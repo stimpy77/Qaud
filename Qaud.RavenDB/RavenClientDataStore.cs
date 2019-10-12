@@ -55,10 +55,7 @@ namespace Qaud.RavenDB
             if (AutoSave) SaveChanges();
         }
 
-        protected virtual IQueryable<T> Query
-        {
-            get { return GetSession().Query<T>(); }
-        }
+        protected virtual IQueryable<T> Query => GetSession().Query<T>();
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -70,20 +67,11 @@ namespace Qaud.RavenDB
             return GetEnumerator();
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        System.Linq.Expressions.Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        System.Linq.Expressions.Expression IQueryable.Expression => Query.Expression;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         public virtual T Get(T lookup)
         {
@@ -160,15 +148,9 @@ namespace Qaud.RavenDB
 
         public virtual bool AutoSave { get; set; }
 
-        bool IDataStore<T>.SupportsNestedRelationships
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsNestedRelationships => false;
 
-        bool IDataStore<T>.SupportsTransactionScope
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsTransactionScope => true;
 
         public virtual void SaveChanges()
         {
@@ -183,51 +165,33 @@ namespace Qaud.RavenDB
         ///     Returns the IDocumentStore responsible for document storage.
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected IDocumentStore DataSet
-        {
-            get { return _docStore; }
-        }
+        protected IDocumentStore DataSet => _docStore;
 
         /// <summary>
         ///     Returns the IDocumentStore responsible for document storage.
         /// </summary>
-        object IDataStore<T>.DataSet
-        {
-            get { return DataSet; }
-        }
+        object IDataStore<T>.DataSet => DataSet;
 
         /// <summary>
         ///     Returns the session object that may or may not contain pending changes.
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected IDocumentSession DataContext
-        {
-            get { return GetSession(); }
-        }
+        protected IDocumentSession DataContext => GetSession();
 
         /// <summary>
         ///     Returns the session object that may or may not contain pending changes.
         /// </summary>
-        object IDataStore<T>.DataContext
-        {
-            get { return DataContext; }
-        }
+        object IDataStore<T>.DataContext => DataContext;
 
         /// <summary>
         /// Gets whether the data store implementation supports 
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
         /// </summary>
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => false;
 
 
-        bool IDataStore<T>.SupportsComplexStructures
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsComplexStructures => true;
 
         public virtual void Dispose()
         {
@@ -260,10 +224,7 @@ namespace Qaud.RavenDB
         /// <summary>
         /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
         /// </summary>
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.CanQueueChanges => true;
 
         public string StoreName
         {

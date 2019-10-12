@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
@@ -17,25 +18,32 @@ namespace Qaud
         private IEnumerable<PropertyInfo> _keyMembers;
         private IEnumerable<PropertyInfo> _publicProperties;
 
-        public IEnumerable<PropertyInfo> NonKeyPropertyMembers
+        /// <summary>
+        /// Returns the property members that are not attributed with <see cref="KeyAttribute"/>
+        /// </summary>
+        public virtual IEnumerable<PropertyInfo> NonKeyPropertyMembers
         {
             get
             {
-                return typeof(T).GetProperties().Where(p => !KeyPropertyMembers.Contains(p));
+                return typeof(T).GetProperties(BindingFlags.Instance|BindingFlags.Public)
+                    .Where(p => !KeyPropertyMembers.Contains(p));
             }
         }
 
-        public IEnumerable<PropertyInfo> KeyPropertyMembers
+        /// <summary>
+        /// Returns the property members that are attributed with <see cref="KeyAttribute"/>
+        /// </summary>
+        public virtual IEnumerable<PropertyInfo> KeyPropertyMembers
         {
             get
             {
                 if (_keyMembers == null)
                 {
-                    var properties = typeof (T).GetProperties();
+                    var properties = typeof (T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
                     _keyMembers =
                         from member in properties
                         where
-                            member.GetCustomAttributes(typeof (System.ComponentModel.DataAnnotations.KeyAttribute), true)
+                            member.GetCustomAttributes(typeof (KeyAttribute), true)
                                 .Any()
                         select member;
                     if (!_keyMembers.Any())
@@ -52,7 +60,7 @@ namespace Qaud
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public IEnumerable<object> GetKeyPropertyValues(object item)
+        public virtual IEnumerable<object> GetKeyPropertyValues(object item)
         {
             var itemType = item.GetType();
             return KeyPropertyMembers.Select(p => itemType.GetProperty(p.Name).GetValue(item));
@@ -68,7 +76,8 @@ namespace Qaud
             var datarow = item as DbDataReader;
             
             if (datarow == null)
-                return item.GetType().GetProperties().ToDictionary(property
+                return item.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance)
+                    .ToDictionary(property
                     => property.Name, property => property.GetValue(item, new object[] {}));
 
             var dictionary = new Dictionary<string, object>();
@@ -95,21 +104,42 @@ namespace Qaud
             }
         }
 
-        public void ApplyPartial(T target, object changes)
+        /// <summary>
+        /// Maps the values of the given <paramref name="changes"/> to the given <paramref name="target"/>.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="changes"></param>
+        public void ApplyPartial(T target, IDictionary<string, object> changes)
         {
-            IDictionary<string, object> dic;
-            if (!(changes is IDictionary<string, object>))
+            foreach (var kvp in changes)
             {
-                dic = ConvertToDictionary(changes);
-            }
-            else dic = (Dictionary<string, object>)changes;
-            foreach (var kvp in dic)
-            {
-                typeof(T).GetProperty(kvp.Key).SetValue(target, kvp.Value, new object[] {});
+                typeof(T).GetProperty(kvp.Key).SetValue(target, kvp.Value, new object[] { });
             }
         }
 
-        public System.Type TypeOfProperty(string property)
+        /// <summary>
+        /// Maps the values of the given <paramref name="changes"/> to the given <paramref name="target"/>.
+        /// The <paramref name="changes"/> parameter must be an
+        /// object that can be converted to a dictionary by reflecting its properties.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="changes"></param>
+        public void ApplyPartial<TChanges>(T target, TChanges changes)
+        {
+            if (changes is IDictionary<string, object> dic)
+            {
+                ApplyPartial(target, dic);
+                return;
+            }
+            ApplyPartial(target, ConvertToDictionary(changes));
+        }
+
+        /// <summary>
+        /// Returns the PropertyType of the member of <typeparamref name="T"/> having the given property name.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public Type PropertyType(string property)
         {
             return typeof (T).GetProperty(property).PropertyType;
         }

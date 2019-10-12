@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Qaud.EntityFramework
 {
@@ -30,34 +33,22 @@ namespace Qaud.EntityFramework
         }
 
 
-        protected DbSet<T> DataSet
-        {
-            get { return _dbSet; }
-        }
+        protected DbSet<T> DataSet => _dbSet;
 
         /// <summary>
         ///     Returns the underlying <see cref="DbSet{T}" />
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        protected DbContext DataContext
-        {
-            get { return _dbContext; }
-        }
+        protected DbContext DataContext => _dbContext;
 
-        object IDataStore<T>.DataSet
-        {
-            get { return DataSet; }
-        }
+        object IDataStore<T>.DataSet => DataSet;
 
         /// <summary>
         ///     If provided during instantiation, returns the <see cref="DbContext" /> with which the underlying DbSet is
         ///     associated.
         /// </summary>
         /// <remarks>This is "protected" for convenience not safety.</remarks>
-        object IDataStore<T>.DataContext
-        {
-            get { return DataContext; }
-        }
+        object IDataStore<T>.DataContext => DataContext;
 
         ///////////////////////////////////////////
 
@@ -68,7 +59,8 @@ namespace Qaud.EntityFramework
         /// <returns></returns>
         public virtual T Create()
         {
-            return _dbSet.Create();
+            //return _dbSet.Create();
+            return Activator.CreateInstance<T>();
         }
 
         /// <summary>
@@ -131,10 +123,7 @@ namespace Qaud.EntityFramework
         /// <summary>
         ///     Returns the underlying DbSet as an <see cref="IQueryable{T}" />
         /// </summary>
-        protected virtual IQueryable<T> Query
-        {
-            get { return _dbSet; }
-        }
+        protected virtual IQueryable<T> Query => _dbSet;
 
         /// <summary>
         ///     Instructs the underlying DbSet to attach the given items, and, if <see cref="AutoSave" />
@@ -204,13 +193,13 @@ namespace Qaud.EntityFramework
 
         public virtual bool AutoSave
         {
-            get { return _autoSave; }
-            set { _autoSave = value; }
+            get => _autoSave;
+            set => _autoSave = value;
         }
 
         public virtual IEnumerator<T> GetEnumerator()
         {
-            return this.Query.GetEnumerator();
+            return Query.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -218,20 +207,11 @@ namespace Qaud.EntityFramework
             return GetEnumerator();
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        System.Linq.Expressions.Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        Expression IQueryable.Expression => Query.Expression;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         public virtual void SaveChanges()
         {
@@ -257,52 +237,48 @@ namespace Qaud.EntityFramework
         /// via <see cref="SupportsNestedRelationships"/> (navigation properties) or via tree-based document storage.
         /// Returns false if the document store only supports flat table structures, with no relationships.
         /// </summary>
-        bool IDataStore<T>.SupportsNestedRelationships
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsNestedRelationships => true;
 
-        bool IDataStore<T>.SupportsComplexStructures
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsComplexStructures => true;
 
         /// <summary>
         /// Gets whether the data store implementation supports 
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
         /// </summary>
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => true;
 
         /// <summary>
         /// When implemented, gets whether the data store implementation supports transaction scopes
         /// such as when using <code>using (var transaction = new TransactionScope()) { .. }</code>
         /// </summary>
-        bool IDataStore<T>.SupportsTransactionScope
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.SupportsTransactionScope => true;
 
         /// <summary>
         /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
         /// </summary>
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.CanQueueChanges => true;
 
         public string StoreName
         {
             get
             {
-                // temporary implementation
+                var name = GetTableName(((IObjectContextAdapter) DataContext).ObjectContext);
+                if (!string.IsNullOrEmpty(name)) return name;
+
                 var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>();
-                if (tableAttr != null) return tableAttr.Name;
-                return typeof(T).Name;
+                return tableAttr != null ? tableAttr.Name : typeof(T).Name;
             }
+        }
+
+        private string GetTableName(ObjectContext context)
+        {
+            var sql = context.CreateObjectSet<T>().ToTraceString();
+            var regex = new Regex(@"FROM\s+(?<table>.+)\s+AS");
+            var match = regex.Match(sql);
+
+            var table = match.Groups["table"].Value;
+            return table;
         }
 
     }

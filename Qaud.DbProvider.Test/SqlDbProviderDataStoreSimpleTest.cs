@@ -33,7 +33,7 @@ namespace Qaud.DbProvider.Test
 
         protected virtual void RecreateTable()
         {
-            var cmdCreateDatabase = "CREATE DATABASE QAUD_TEST";
+            var cmdCreateDatabase = "CREATE DATABASE QAUD_DBTEST_DBPROVIDER";
             var cmdDrop = @"DROP TABLE FooModel";
 
             var cmdCreate = @"CREATE TABLE dbo.FooModel
@@ -90,10 +90,10 @@ namespace Qaud.DbProvider.Test
                         )";
                 using (var cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.Add("@ID", item.ID);
-                    cmd.Parameters.Add("@CreateDate", item.CreateDate);
-                    cmd.Parameters.Add("@Title", (object)item.Title ?? DBNull.Value);
-                    cmd.Parameters.Add("@Content", (object)item.Content ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ID", item.ID);
+                    cmd.Parameters.AddWithValue("@CreateDate", item.CreateDate);
+                    cmd.Parameters.AddWithValue("@Title", (object)item.Title ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Content", (object)item.Content ?? DBNull.Value);
                     cmd.ExecuteNonQuery();
                 }
             }

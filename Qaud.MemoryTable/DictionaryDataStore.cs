@@ -134,42 +134,24 @@ namespace Qaud.MemoryTable
 
         public bool AutoSave
         {
-            get { return true; }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get => true;
+            set => throw new NotImplementedException();
         }
 
-        public bool SupportsNestedRelationships
-        {
-            get { return false; }
-        }
+        public bool SupportsNestedRelationships => false;
 
-        public bool SupportsComplexStructures
-        {
-            get { return true; }
-        }
+        public bool SupportsComplexStructures => true;
 
-        public bool SupportsTransactionScope
-        {
-            get { return false; }
-        }
+        public bool SupportsTransactionScope => false;
 
         public void SaveChanges()
         {
             //throw new NotImplementedException();
         }
 
-        object IDataStore<T>.DataSet
-        {
-            get { return _dictionary; }
-        }
+        object IDataStore<T>.DataSet => _dictionary;
 
-        object IDataStore<T>.DataContext
-        {
-            get { return null; }
-        }
+        object IDataStore<T>.DataContext => null;
 
 
         /// <summary>
@@ -177,10 +159,7 @@ namespace Qaud.MemoryTable
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedAttribute"/>, particularly
         /// <see cref="System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity"/>
         /// </summary>
-        bool IDataStore<T>.SupportsGeneratedKeys
-        {
-            get { return false; }
-        }
+        bool IDataStore<T>.SupportsGeneratedKeys => false;
 
         void ICollection<T>.Clear()
         {
@@ -198,15 +177,9 @@ namespace Qaud.MemoryTable
             items.CopyTo(array, arrayIndex);
         }
 
-        int ICollection<T>.Count
-        {
-            get { return _dictionary.Count; }
-        }
+        int ICollection<T>.Count => _dictionary.Count;
 
-        bool ICollection<T>.IsReadOnly
-        {
-            get { return ((ICollection<T>)_dictionary).IsReadOnly; }
-        }
+        bool ICollection<T>.IsReadOnly => ((ICollection<T>)_dictionary).IsReadOnly;
 
         bool ICollection<T>.Remove(T item)
         {
@@ -228,20 +201,11 @@ namespace Qaud.MemoryTable
             return GetEnumerator();
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return Query.ElementType; }
-        }
+        Type IQueryable.ElementType => Query.ElementType;
 
-        System.Linq.Expressions.Expression IQueryable.Expression
-        {
-            get { return Query.Expression; }
-        }
+        System.Linq.Expressions.Expression IQueryable.Expression => Query.Expression;
 
-        IQueryProvider IQueryable.Provider
-        {
-            get { return Query.Provider; }
-        }
+        IQueryProvider IQueryable.Provider => Query.Provider;
 
         void IDictionary<string, T>.Add(string key, T value)
         {
@@ -253,10 +217,7 @@ namespace Qaud.MemoryTable
             return _dictionary.ContainsKey(key);
         }
 
-        ICollection<string> IDictionary<string, T>.Keys
-        {
-            get { return _dictionary.Keys; }
-        }
+        ICollection<string> IDictionary<string, T>.Keys => _dictionary.Keys;
 
         bool IDictionary<string, T>.Remove(string key)
         {
@@ -268,15 +229,12 @@ namespace Qaud.MemoryTable
             return _dictionary.TryGetValue(key, out value);
         }
 
-        ICollection<T> IDictionary<string, T>.Values
-        {
-            get { return _dictionary.Values; }
-        }
+        ICollection<T> IDictionary<string, T>.Values => _dictionary.Values;
 
         T IDictionary<string, T>.this[string key]
         {
-            get { return _dictionary[key]; }
-            set { _dictionary[key] = value; }
+            get => _dictionary[key];
+            set => _dictionary[key] = value;
         }
 
         void ICollection<KeyValuePair<string, T>>.Add(KeyValuePair<string, T> item)
@@ -299,15 +257,9 @@ namespace Qaud.MemoryTable
             ((IDictionary<string, T>)_dictionary).CopyTo(array, arrayIndex);
         }
 
-        int ICollection<KeyValuePair<string, T>>.Count
-        {
-            get { return _dictionary.Count; }
-        }
+        int ICollection<KeyValuePair<string, T>>.Count => _dictionary.Count;
 
-        bool ICollection<KeyValuePair<string, T>>.IsReadOnly
-        {
-            get { return false; }
-        }
+        bool ICollection<KeyValuePair<string, T>>.IsReadOnly => false;
 
         bool ICollection<KeyValuePair<string, T>>.Remove(KeyValuePair<string, T> item)
         {
@@ -343,10 +295,7 @@ namespace Qaud.MemoryTable
         /// <summary>
         /// Indicates whether setting <see cref="AutoSave"/> to <value>false</value> has any effect.
         /// </summary>
-        bool IDataStore<T>.CanQueueChanges
-        {
-            get { return true; }
-        }
+        bool IDataStore<T>.CanQueueChanges => true;
 
         public string StoreName
         {

@@ -9,7 +9,7 @@ namespace Qaud.DbProvider.Test
     [TestClass]
     public class SqlDbProviderDataStoreSimpleTest : DataStoreSimpleTest
     {
-        private const string TEST_DATABASE_NAME = "QAUD_TEST";
+        private const string TEST_DATABASE_NAME = "QAUD_DBTEST_DBPROVIDER";
         private const string TEST_CONNECTION_STRING = "Data Source=(localdb)\\mssqllocaldb;Integrated Security=true;Database=" + TEST_DATABASE_NAME + ";";
         public SqlDbProviderDataStoreSimpleTest()
             : base(getDataStoreProvider())
